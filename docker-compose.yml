@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+    mongodb:
+        image: docker.io/bitnami/mongodb:4.4
+        ports:
+            - "27017:27017"
+        volumes:
+            - 'mongodb_data:/bitnami/mongodb'
+
+    server:
+        image: node:16-alpine3.11
+        working_dir: './server/dist'
+        ports:
+            - "3000:3000"
+        volumes: 
+            - './server/dist:/opt/'
+  
+volumes:
+    mongodb_data:
+        driver: local

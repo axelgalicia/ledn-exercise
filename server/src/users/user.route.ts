@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
-import { User, UserDoc } from '../models/user';
+import { Logger } from '../logger/logger';
+import UserController from './user.controller';
+import { User, UserDoc } from './user.model';
 
 
 const router = express.Router();
@@ -38,15 +40,14 @@ router.get('/api/users', async (req: Request, res: Response) => {
  * 
  */
 router.post('/api/users', [], async (req: Request, res: Response) => {
-    console.log('POST: save user');
     let user: UserDoc = new User();
     try {
-        user = User.buildFromRequest(req.body);
-        await User.create(user);
+        user = await UserController.CreateUser(req.body);
     } catch (e) {
-        console.error(e);
+        Logger.error('Error to save new user :', e);
         return res.status(500).send(e);
     }
+    Logger.info('New user saved');
     return res.status(200).send(user);
 });
 
@@ -60,20 +61,20 @@ router.post('/api/users', [], async (req: Request, res: Response) => {
  * @Return UserDoc[]
  * 
  */
-router.post('/api/users/bulk', [], async (req: Request, res: Response) => {
-    console.log('POST: save users bulk');
-    let users: UserDoc[] = [];
-    let usersSaved: any;
-    try {
-        users = User.buildFromBulkRequest(req.body);
-        usersSaved = await User.insertMany(users, { ordered: false });
+// router.post('/api/users/bulk', [], async (req: Request, res: Response) => {
+//     console.log('POST: save users bulk');
+//     let users: UserDoc[] = [];
+//     let usersSaved: any;
+//     try {
+//         users = User.buildFromBulkRequest(req.body);
+//         usersSaved = await User.insertMany(users, { ordered: false });
 
-    } catch (e) {
-        console.error(e);
-        return res.status(500).send(e);
-    }
-    return res.status(200).send(usersSaved);
-});
+//     } catch (e) {
+//         console.error(e);
+//         return res.status(500).send(e);
+//     }
+//     return res.status(200).send(usersSaved);
+// });
 
 /**
  * 

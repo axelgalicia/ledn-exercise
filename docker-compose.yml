@@ -5,7 +5,7 @@ services:
     mongodb:
         container_name: mongodb
         image: mongo:5.0.1
-        restart: unless-stopped
+        restart: always
         env_file: 
             - ./.env
         environment:
@@ -32,7 +32,7 @@ services:
         container_name: mongo-express
         depends_on:
             - mongodb
-        restart: unless-stopped
+        restart: always
         ports:
             - "8081:8081"
         env_file: 
@@ -52,14 +52,29 @@ services:
         networks: 
             - mongodb_network
 
-    # server:
-    #     image: node:16-alpine3.11
-    #     working_dir: './server/dist'
-    #     ports:
-    #         - "3000:3000"
-    #     volumes: 
-    #         - './server/dist:/opt/'
-    #     command: ''
+    ledn-api:
+        container_name: ledn-api
+        depends_on:
+            - mongodb
+        restart: always
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        command: ["pm2-runtime","start","process.json","--name","ledn_server_prod"]
+        env_file:
+            - ./.env
+        environment:
+            - PORT=${LEDN_PORT}
+            - LEDN_MONGO_USER=${LEDN_MONGO_USER}
+            - LEDN_MONGO_PASSWORD=${LEDN_MONGO_PASSWORD}
+            - LEDN_MONGO_HOSTNAME=${LEDN_MONGO_HOSTNAME}
+            - LEDN_MONGO_PORT=${LEDN_MONGO_PORT}
+            - LEDN_MONGO_DB=${MONGO_INITDB_DATABASE}
+        ports:
+            - "3000:3000"
+        networks: 
+            - mongodb_network
+        
   
 volumes:
     mongodb_data:

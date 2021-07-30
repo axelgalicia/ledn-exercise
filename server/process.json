@@ -1,0 +1,10 @@
+{
+    "apps": [{
+        "name" : "ledn_server_dev",
+        "script" : "./dist/app.js"
+    },
+    {
+        "name" : "ledn_server_prod",
+        "script" : "./dist/app.js"
+    }]
+}

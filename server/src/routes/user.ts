@@ -11,7 +11,7 @@ const router = express.Router();
  * 
  * @param req Http Request
  * @param res Http Response
- * @Return Returns the list of all users
+ * @Return Returns the list of all UserDoc[]
  * 
  */
 router.get('/api/users', async (req: Request, res: Response) => {
@@ -34,7 +34,7 @@ router.get('/api/users', async (req: Request, res: Response) => {
  * 
  * @param req Http Request
  * @param res Http Response
- * @Return Returns the new user added
+ * @Return Returns the new UserDoc added
  * 
  */
 router.post('/api/users', [], async (req: Request, res: Response) => {
@@ -45,7 +45,7 @@ router.post('/api/users', [], async (req: Request, res: Response) => {
         await User.create(user);
     } catch (e) {
         console.error(e);
-        return res.status(400).send(e);
+        return res.status(500).send(e);
     }
     return res.status(200).send(user);
 });
@@ -57,20 +57,22 @@ router.post('/api/users', [], async (req: Request, res: Response) => {
  * 
  * @param req Http Request
  * @param res Http Response
- * @Return Empty 201 on Success
+ * @Return UserDoc[]
  * 
  */
- router.post('/api/users', [], async (req: Request, res: Response) => {
-    console.log('POST: save user');
-    let user: UserDoc = new User();
+router.post('/api/users/bulk', [], async (req: Request, res: Response) => {
+    console.log('POST: save users bulk');
+    let users: UserDoc[] = [];
+    let usersSaved: any;
     try {
-        user = User.buildFromRequest(req.body);
-        await User.create(user);
+        users = User.buildFromBulkRequest(req.body);
+        usersSaved = await User.insertMany(users, { ordered: false });
+
     } catch (e) {
         console.error(e);
-        return res.status(400).send(e);
+        return res.status(500).send(e);
     }
-    return res.status(200).send(user);
+    return res.status(200).send(usersSaved);
 });
 
 /**
@@ -81,7 +83,7 @@ router.post('/api/users', [], async (req: Request, res: Response) => {
  * 
  * @param req Http Request
  * @param res Http Response
- * @Return Returns t
+ * @Return 201
  * 
  */
 router.delete('/api/users', [], async (req: Request, res: Response) => {

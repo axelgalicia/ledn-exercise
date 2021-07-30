@@ -98,7 +98,7 @@ userSchema.statics.build = (attr: IUser) => {
     return new User(attr);
 }
 
-userSchema.statics.buildFromRequest = (attr: IUserRequest) => {
+userSchema.statics.buildFromRequest = (attr: IUserRequest): UserDoc => {
     const { email, mfa, amt } = attr;
     const firstName = attr[FIRST_NAME_REQUEST_FIELD];
     const lastName = attr[LAST_NAME_REQUEST_FIELD];
@@ -108,6 +108,15 @@ userSchema.statics.buildFromRequest = (attr: IUserRequest) => {
     const createdDate = Date.parse(attr.createdDate);
 
     return new User({ firstName, lastName, countryCode, email, dob, mfa, amt, createdDate, referredBy });
+}
+
+userSchema.statics.buildFromBulkRequest = (userRequests: IUserRequest[]): UserDoc[] => {
+    const mappedUsers = userRequests.map(user => { 
+        console.log(user);
+        return User.buildFromRequest(user)
+    });
+    console.log('mapped users:', mappedUsers);
+    return mappedUsers;
 }
 
 const User = mongoose.model<UserDoc, UserModelInterface>('User', userSchema);

@@ -11,7 +11,7 @@ services:
         ports:
             - 27017:27017
         volumes:
-            - mongodb_data:/data/db
+            - mongodb_data_dev:/data/db
             - ./conf/mongodb/scripts/:/docker-entrypoint-initdb.d/
         healthcheck:
             test: echo 'db.runCommand("ping").ok' | mongo 10.10.10.60:27017/test --quiet
@@ -57,7 +57,7 @@ services:
         
   
 volumes:
-    mongodb_data:
+    mongodb_data_dev:
         driver: local
 networks: 
     mongodb_network:

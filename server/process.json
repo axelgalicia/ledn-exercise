@@ -4,13 +4,13 @@
             "name": "ledn_server_dev",
             "script": "./dist/src/app.js",
             "env_development": {
-                "NODE_ENV": "developent",
+                "NODE_ENV": "development",
                 "LEDN_PORT": 3000,
                 "LEDN_MONGO_USER": "ledn_admin",
                 "LEDN_MONGO_PASSWORD": "ledn_password",
-                "LEDN_MONGO_HOSTNAME": "mongodb",
+                "LEDN_MONGO_HOSTNAME": "localhost",
                 "LEDN_MONGO_DB": "ledndb",
-                "LEDN_MONGO_PORT": 2707
+                "LEDN_MONGO_PORT": 27017
             }
         },
         {
@@ -23,7 +23,7 @@
                 "LEDN_MONGO_PASSWORD": "ledn_password",
                 "LEDN_MONGO_HOSTNAME": "mongodb",
                 "LEDN_MONGO_DB": "ledndb",
-                "LEDN_MONGO_PORT": 2707
+                "LEDN_MONGO_PORT": 27017
             }
         }
     ]

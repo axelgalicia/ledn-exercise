@@ -51,9 +51,11 @@ const buildFromInput = (attr: IUserInput): UserDoc => {
 // }
 
 const CreateUser = async (userInput: IUserInput) => {
-    const userDoc = buildFromInput(userInput);
-    userDocSchemaValidator.validate(userDoc);
-    return await User.create(userDoc);
+    const userDoc: UserDoc = buildFromInput(userInput);
+    // userDocSchemaValidator.validate(userDoc);
+    const newUserDoc: UserDoc = await User.create(userDoc);
+    console.log('New user created:', newUserDoc);
+    return newUserDoc;
 }
 
 export default { CreateUser }

@@ -8,11 +8,14 @@ var body_parser_1 = require("body-parser");
 var user_route_1 = require("./users/user.route");
 var connect_1 = require("./mongodb/connect");
 var logger_1 = require("./logger/logger");
-var PORT = process.env.SERVER_PORT || 3000;
+var global_config_1 = __importDefault(require("./global.config"));
 var app = express_1.default();
 app.use(body_parser_1.json());
 app.use(user_route_1.userRouter);
 connect_1.ConnectToMongoDB();
-app.listen(PORT, function () {
-    logger_1.Logger.info("Server is listening on port " + PORT);
+app.listen(global_config_1.default.APP_PORT, function () {
+    logger_1.Logger.info("Server is listening on port " + global_config_1.default.APP_PORT);
+});
+process.on('SIGINT', function () {
+    logger_1.Logger.info('Kill signal received');
 });

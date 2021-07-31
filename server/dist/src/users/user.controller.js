@@ -88,14 +88,16 @@ var buildFromInput = function (attr) {
 //     return mappedUsers;
 // }
 var CreateUser = function (userInput) { return __awaiter(void 0, void 0, void 0, function () {
-    var userDoc;
+    var userDoc, newUserDoc;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 userDoc = buildFromInput(userInput);
-                userDocSchemaValidator.validate(userDoc);
                 return [4 /*yield*/, user_model_1.User.create(userDoc)];
-            case 1: return [2 /*return*/, _a.sent()];
+            case 1:
+                newUserDoc = _a.sent();
+                console.log('New user created:', newUserDoc);
+                return [2 /*return*/, newUserDoc];
         }
     });
 }); };

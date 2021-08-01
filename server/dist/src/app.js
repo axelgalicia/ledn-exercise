@@ -1,4 +1,12 @@
 "use strict";
+/**
+ * @description LEDN API Server - Starts an Express JS API
+ *              which allows the user to query and insert Users
+ *              into and from a NoSQL database. (MongoDB)
+ *
+ *
+ * @author Axel Galicia - axelgalicia@gmail.com
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -53,10 +61,20 @@ connect_1.ConnectToMongoDB();
 app.listen(app_config_1.appConfig.appPort, function () {
     logger_1.Logger.info("Server is listening on port " + app_config_1.appConfig.appPort);
 });
+/**
+ *
+ * Registers the global error handler
+ *
+ * @param error The Error object
+ * @param req Http Request
+ * @param res Http Response
+ * @param next Next Function Callback
+ *
+ */
 app.use(function (err, req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, error_handler_1.handler.handleError(err, res, next)];
+            case 0: return [4 /*yield*/, error_handler_1.handler.handleError(err, req, res, next)];
             case 1:
                 _a.sent();
                 return [2 /*return*/];

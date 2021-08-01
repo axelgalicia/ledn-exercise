@@ -8,7 +8,7 @@
     "start": "pm2-runtime start process.json --only ledn_server_dev --env development",
     "build": "tsc -p ."
   },
-  "author": "Axel Galicia",
+  "author": "Axel Galicia - axelgalicia@gmail.com",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.13",

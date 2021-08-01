@@ -1,5 +1,5 @@
 
-## Build
+## Build Stage
 FROM node:14.17-alpine3.14 AS appbuild
 WORKDIR /opt
 COPY package.json ./
@@ -10,7 +10,7 @@ RUN npm install
 RUN npm run build
 RUN rm -rf ./src
 
-## Second Stage & run
+## Second Stage to run in production
 FROM node:14.17-alpine3.14
 WORKDIR /opt
 COPY package.json ./

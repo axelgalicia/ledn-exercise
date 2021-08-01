@@ -1,4 +1,8 @@
 "use strict";
+/**
+ * @description Defines Express Route for User Model
+ * @author Axel Galicia - axelgalicia@gmail.com
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -41,6 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRouter = void 0;
 var express_1 = __importDefault(require("express"));
+var logger_1 = require("../logger/logger");
 var user_controller_1 = __importDefault(require("./user.controller"));
 var user_model_1 = require("./user.model");
 var router = express_1.default.Router();
@@ -55,7 +60,7 @@ exports.userRouter = router;
  * @param res Http Response
  * @param next Next Function
  *
- * @Return Returns the list of all UserDoc[]
+ * @returns {UserDoc[]} Returns the list of all UserDoc[]
  *
  */
 router.get('/api/users', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -73,7 +78,6 @@ router.get('/api/users', function (req, res, next) { return __awaiter(void 0, vo
                 return [3 /*break*/, 4];
             case 3:
                 e_1 = _a.sent();
-                console.log(e_1);
                 return [2 /*return*/, res.status(500).send('User could not be saved')];
             case 4: return [2 /*return*/, res.send(users)];
         }
@@ -89,7 +93,7 @@ router.get('/api/users', function (req, res, next) { return __awaiter(void 0, vo
  * @param res Http Response
  * @param next Next Function
  *
- * @Return Returns the new UserDoc added
+ * @returns {UserDoc} Returns the new UserDoc added
  *
  */
 router.post('/api/users', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -111,7 +115,7 @@ router.post('/api/users', [], function (req, res, next) { return __awaiter(void 
     });
 }); });
 /**
- * Accepts an array of users to insert
+ * Inserts an array of users
  *
  *
  * POST /api/users/bulk
@@ -120,7 +124,7 @@ router.post('/api/users', [], function (req, res, next) { return __awaiter(void 
  * @param res Http Response
  * @param next Next Function
  *
- * @Return UserDoc[]
+ * @returns {any}
  *
  */
 router.post('/api/users/bulk', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -149,27 +153,27 @@ router.post('/api/users/bulk', [], function (req, res, next) { return __awaiter(
  *
  * @param req Http Request
  * @param res Http Response
- * @Return 201
+ * @param next Next Function
+ *
+ * @returns {Void}
  *
  */
-router.delete('/api/users', [], function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var e_2;
+router.delete('/api/users', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log('Deleting all users');
-                _a.label = 1;
+                _a.trys.push([0, 2, , 3]);
+                logger_1.Logger.info('Deleting all users..');
+                return [4 /*yield*/, user_controller_1.default.deleteAllUsers()];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, user_model_1.User.deleteMany()];
-            case 2:
                 _a.sent();
-                return [3 /*break*/, 4];
-            case 3:
-                e_2 = _a.sent();
-                console.log('could not delete', e_2);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/, res.status(201).send('All Users deleted')];
+                return [2 /*return*/, res.status(204).send()];
+            case 2:
+                error_3 = _a.sent();
+                next(error_3);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });

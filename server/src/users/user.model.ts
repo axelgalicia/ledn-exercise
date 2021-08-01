@@ -1,3 +1,8 @@
+/**
+ * @description Defines Mongoose User Model
+ * @author Axel Galicia - axelgalicia@gmail.com
+ */
+
 import mongoose from 'mongoose';
 
 interface IUser {

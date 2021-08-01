@@ -1,3 +1,8 @@
+/**
+ * @description App Configuration properties
+ * @author Axel Galicia - axelgalicia@gmail.com
+ */
+
 const APP_PORT = process.env.LEDN_PORT;
 
 

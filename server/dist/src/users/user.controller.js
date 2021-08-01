@@ -79,12 +79,21 @@ var buildFromInput = function (userInput, userInputSchema) {
     var createdDate = Date.parse(userInput.createdDate);
     return new user_model_1.User({ firstName: firstName, lastName: lastName, countryCode: countryCode, email: email, dob: dob, mfa: mfa, amt: amt, createdDate: createdDate, referredBy: referredBy });
 };
-var insertBulkUsers = function (userRequests) { return __awaiter(void 0, void 0, void 0, function () {
-    var usersSaved, mappedUsers;
+/**
+ * Inserts a bulk array of IUserInput objects into the db
+ * If record already exists based on unique key, this will
+ * be skipped but the response will refer that record as not
+ * inseted due to duplicate key.
+ *
+ * @param {IUserInput[]} userInputs Array of IUserInput to insert into the db
+ *
+ * @returns {any} Returs MongoDB report of insertions
+ */
+var insertBulkUsers = function (userInputs) { return __awaiter(void 0, void 0, void 0, function () {
+    var mappedUsers;
     return __generator(this, function (_a) {
-        usersSaved = {};
         try {
-            mappedUsers = userRequests.map(function (userInput) {
+            mappedUsers = userInputs.map(function (userInput) {
                 return buildFromInput(userInput, userInputSchema);
             });
             return [2 /*return*/, user_model_1.User.insertMany(mappedUsers, { ordered: false, rawResult: true })
@@ -100,6 +109,14 @@ var insertBulkUsers = function (userRequests) { return __awaiter(void 0, void 0,
         return [2 /*return*/];
     });
 }); };
+/**
+ * Inserts a IUserInput object to the db
+ *
+ *
+ * @param {IUserInput} userInput IUserInput object to be inserted into the db
+ *
+ * @returns {UserDoc} Returs the inserted UserDoc object including _Id
+ */
 var createUser = function (userInput) { return __awaiter(void 0, void 0, void 0, function () {
     var newUserDoc, userDoc, error_1;
     return __generator(this, function (_a) {
@@ -121,4 +138,31 @@ var createUser = function (userInput) { return __awaiter(void 0, void 0, void 0,
         }
     });
 }); };
-exports.default = { createUser: createUser, insertBulkUsers: insertBulkUsers };
+/**
+ * Deletes all users in the collection users
+ *
+ * -- TESTING PURPOSES --
+ *
+ *
+ * @param {IUserInput} userInput IUserInput object to be inserted into the db
+ *
+ * @returns {UserDoc} Returs the inserted UserDoc object including _Id
+ */
+var deleteAllUsers = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, user_model_1.User.deleteMany()];
+            case 1:
+                _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                error_2 = _a.sent();
+                throw error_2;
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.default = { createUser: createUser, insertBulkUsers: insertBulkUsers, deleteAllUsers: deleteAllUsers };

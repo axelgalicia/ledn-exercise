@@ -1,3 +1,9 @@
+/**
+ * @description Defines an Erron handler class to properly return formatted errors
+ *              to the user.
+ * @author Axel Galicia - axelgalicia@gmail.com
+ */
+
 import { Logger } from "../logger/logger";
 import { v4 as uuidv4 } from 'uuid';
 import { NextFunction, Request, Response } from 'express';
@@ -13,31 +19,60 @@ class ErrorHandler {
     public static readonly MONGO_ERROR = 'MongoError';
     public static readonly VALIDATION_ERROR = 'ValidationError';
 
-    public async handleError(error: any, response: Response, next: NextFunction): Promise<void> {
-        await this.handleMongooseError(error, response, next);
-        await this.handleValidationError(error, response, next);
+
+    /**
+     * 
+     * Handles all errors comming from next() call
+     * 
+     * @param error The Error object
+     * @param req Http Request
+     * @param res Http Response
+     * @param next Next Function Callback
+     * 
+     */
+    public async handleError(error: any, req: Request, res: Response, next: NextFunction): Promise<void> {
+        await this.handleMongooseError(error, res, next);
+        await this.handleValidationError(error, res, next);
         Logger.error(error);
     };
 
-    private async handleMongooseError(error: any, response: Response, next: NextFunction): Promise<void> {
+    /**
+     * 
+     * Handles all errors matching MongoDB from next() call
+     * 
+     * @param error The Error object
+     * @param res Http Response
+     * @param next Next Function Callback
+     * 
+     */
+    private async handleMongooseError(error: any, res: Response, next: NextFunction): Promise<void> {
 
         if (this.isMongoError(error)) {
             const trackingCode = uuidv4();
             const responseError = this.getMongoErrorResponse(error, trackingCode);
             Logger.child({ trackingCode: trackingCode }).error(responseError);
-            response.status(500).json(responseError);
+            res.status(500).json(responseError);
         } else {
             next(error);
         }
     }
 
-    private async handleValidationError(error: any, response: Response, next: NextFunction): Promise<void> {
+    /**
+     * 
+     * Handles all errors matching ValidationError from Joi JS from next() call
+     * 
+     * @param error The Error object
+     * @param res Http Response
+     * @param next Next Function Callback
+     * 
+     */
+    private async handleValidationError(error: any, res: Response, next: NextFunction): Promise<void> {
 
         if (this.isValidationError(error)) {
             const trackingCode = uuidv4();
             const responseError = this.getValidationErrorResponse(error, trackingCode);
             Logger.child({ trackingCode: trackingCode }).error(responseError);
-            response.status(500).json(responseError);
+            res.status(500).json(responseError);
         } else {
             next(error);
         }

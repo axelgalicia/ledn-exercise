@@ -5,7 +5,6 @@
 
 import { UserDoc, User } from "./user.model";
 import Joi from 'joi';
-import { truncate } from "fs/promises";
 
 
 const FIRST_NAME_INPUT_FIELD = "First Name";
@@ -58,11 +57,20 @@ const buildFromInput = (userInput: IUserInput, userInputSchema: Joi.Schema): Use
     return new User({ firstName, lastName, countryCode, email, dob, mfa, amt, createdDate, referredBy });
 }
 
-const insertBulkUsers = async (userRequests: IUserInput[]): Promise<any> => {
-    let usersSaved: any = {};
 
+/**
+ * Inserts a bulk array of IUserInput objects into the db
+ * If record already exists based on unique key, this will
+ * be skipped but the response will refer that record as not
+ * inseted due to duplicate key.
+ * 
+ * @param {IUserInput[]} userInputs Array of IUserInput to insert into the db
+ *
+ * @returns {any} Returs MongoDB report of insertions
+ */
+const insertBulkUsers = async (userInputs: IUserInput[]): Promise<any> => {
     try {
-        const mappedUsers: UserDoc[] = userRequests.map(userInput => {
+        const mappedUsers: UserDoc[] = userInputs.map(userInput => {
             return buildFromInput(userInput, userInputSchema);
         });
 
@@ -77,6 +85,15 @@ const insertBulkUsers = async (userRequests: IUserInput[]): Promise<any> => {
     }
 }
 
+
+/**
+ * Inserts a IUserInput object to the db
+ * 
+ * 
+ * @param {IUserInput} userInput IUserInput object to be inserted into the db
+ *
+ * @returns {UserDoc} Returs the inserted UserDoc object including _Id
+ */
 const createUser = async (userInput: IUserInput): Promise<UserDoc> => {
     let newUserDoc: UserDoc = new User();
     try {
@@ -88,4 +105,22 @@ const createUser = async (userInput: IUserInput): Promise<UserDoc> => {
     return newUserDoc;
 }
 
-export default { createUser, insertBulkUsers }
+/**
+ * Deletes all users in the collection users
+ * 
+ * -- TESTING PURPOSES --
+ * 
+ * 
+ * @param {IUserInput} userInput IUserInput object to be inserted into the db
+ *
+ * @returns {UserDoc} Returs the inserted UserDoc object including _Id
+ */
+const deleteAllUsers = async (): Promise<void> => {
+    try {
+        await User.deleteMany();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export default { createUser, insertBulkUsers, deleteAllUsers }

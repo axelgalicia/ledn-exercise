@@ -1,4 +1,9 @@
 "use strict";
+/**
+ * @description Defines an Erron handler class to properly return formatted errors
+ *              to the user.
+ * @author Axel Galicia - axelgalicia@gmail.com
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -42,14 +47,24 @@ var uuid_1 = require("uuid");
 var ErrorHandler = /** @class */ (function () {
     function ErrorHandler() {
     }
-    ErrorHandler.prototype.handleError = function (error, response, next) {
+    /**
+     *
+     * Handles all errors comming from next() call
+     *
+     * @param error The Error object
+     * @param req Http Request
+     * @param res Http Response
+     * @param next Next Function Callback
+     *
+     */
+    ErrorHandler.prototype.handleError = function (error, req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.handleMongooseError(error, response, next)];
+                    case 0: return [4 /*yield*/, this.handleMongooseError(error, res, next)];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, this.handleValidationError(error, response, next)];
+                        return [4 /*yield*/, this.handleValidationError(error, res, next)];
                     case 2:
                         _a.sent();
                         logger_1.Logger.error(error);
@@ -59,7 +74,16 @@ var ErrorHandler = /** @class */ (function () {
         });
     };
     ;
-    ErrorHandler.prototype.handleMongooseError = function (error, response, next) {
+    /**
+     *
+     * Handles all errors matching MongoDB from next() call
+     *
+     * @param error The Error object
+     * @param res Http Response
+     * @param next Next Function Callback
+     *
+     */
+    ErrorHandler.prototype.handleMongooseError = function (error, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var trackingCode, responseError;
             return __generator(this, function (_a) {
@@ -67,7 +91,7 @@ var ErrorHandler = /** @class */ (function () {
                     trackingCode = uuid_1.v4();
                     responseError = this.getMongoErrorResponse(error, trackingCode);
                     logger_1.Logger.child({ trackingCode: trackingCode }).error(responseError);
-                    response.status(500).json(responseError);
+                    res.status(500).json(responseError);
                 }
                 else {
                     next(error);
@@ -76,7 +100,16 @@ var ErrorHandler = /** @class */ (function () {
             });
         });
     };
-    ErrorHandler.prototype.handleValidationError = function (error, response, next) {
+    /**
+     *
+     * Handles all errors matching ValidationError from Joi JS from next() call
+     *
+     * @param error The Error object
+     * @param res Http Response
+     * @param next Next Function Callback
+     *
+     */
+    ErrorHandler.prototype.handleValidationError = function (error, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var trackingCode, responseError;
             return __generator(this, function (_a) {
@@ -84,7 +117,7 @@ var ErrorHandler = /** @class */ (function () {
                     trackingCode = uuid_1.v4();
                     responseError = this.getValidationErrorResponse(error, trackingCode);
                     logger_1.Logger.child({ trackingCode: trackingCode }).error(responseError);
-                    response.status(500).json(responseError);
+                    res.status(500).json(responseError);
                 }
                 else {
                     next(error);

@@ -47,14 +47,18 @@ var router = express_1.default.Router();
 exports.userRouter = router;
 /**
  *
+ * Gets all Users with filter options
+ *
  * GET /api/users
  *
  * @param req Http Request
  * @param res Http Response
+ * @param next Next Function
+ *
  * @Return Returns the list of all UserDoc[]
  *
  */
-router.get('/api/users', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.get('/api/users', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var users, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -77,10 +81,14 @@ router.get('/api/users', function (req, res) { return __awaiter(void 0, void 0, 
 }); });
 /**
  *
+ * Inserts a new user
+ *
  * POST /api/users
  *
  * @param req Http Request
  * @param res Http Response
+ * @param next Next Function
+ *
  * @Return Returns the new UserDoc added
  *
  */
@@ -103,29 +111,38 @@ router.post('/api/users', [], function (req, res, next) { return __awaiter(void 
     });
 }); });
 /**
+ * Accepts an array of users to insert
+ *
  *
  * POST /api/users/bulk
  *
  * @param req Http Request
  * @param res Http Response
+ * @param next Next Function
+ *
  * @Return UserDoc[]
  *
  */
-// router.post('/api/users/bulk', [], async (req: Request, res: Response) => {
-//     console.log('POST: save users bulk');
-//     let users: UserDoc[] = [];
-//     let usersSaved: any;
-//     try {
-//         users = User.buildFromBulkRequest(req.body);
-//         usersSaved = await User.insertMany(users, { ordered: false });
-//     } catch (e) {
-//         console.error(e);
-//         return res.status(500).send(e);
-//     }
-//     return res.status(200).send(usersSaved);
-// });
+router.post('/api/users/bulk', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var usersSaved, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, user_controller_1.default.insertBulkUsers(req.body)];
+            case 1:
+                usersSaved = _a.sent();
+                return [2 /*return*/, res.status(200).send(usersSaved)];
+            case 2:
+                error_2 = _a.sent();
+                next(error_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
 /**
- *
+ *  Deletes all users on the database
  * -- Testing purposes --
  *
  * DELETE /api/users

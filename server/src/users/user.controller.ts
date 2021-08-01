@@ -5,7 +5,7 @@
 
 import { UserDoc, User } from "./user.model";
 import Joi from 'joi';
-import { Logger } from "../logger/logger";
+import { truncate } from "fs/promises";
 
 
 const FIRST_NAME_INPUT_FIELD = "First Name";
@@ -25,49 +25,62 @@ interface IUserInput {
     [REFERRED_BY_INPUT_FIELD]?: string
 }
 
-const userInputSchemaValidator = Joi.object({
-    [FIRST_NAME_INPUT_FIELD]: Joi.string().alphanum().required(),
-    [LAST_NAME_INPUT_FIELD]: Joi.string().alphanum().required(),
-    [COUNTRY_INPUT_FIELD]: Joi.string().alphanum().min(2).required(),
+const userInputSchema = Joi.object({
+    [FIRST_NAME_INPUT_FIELD]: Joi.string().required(),
+    [LAST_NAME_INPUT_FIELD]: Joi.string().required(),
+    [COUNTRY_INPUT_FIELD]: Joi.string().alphanum().min(2).max(4).required(),
     email: Joi.string().email().required(),
     dob: Joi.date().required(),
-    mfa: Joi.string().alphanum(),
+    mfa: Joi.string(),
     amt: Joi.number().min(0).required(),
     createdDate: Joi.date().required(),
-    [REFERRED_BY_INPUT_FIELD]: Joi.string(),
-})
+    [REFERRED_BY_INPUT_FIELD]: Joi.string().allow(null),
+});
 
 
 /**
  * Converts IUserInput to IUser
  * 
- * @param {IUserInput} attr The user's input from request 
+ * @param {IUserInput} userInput The user's input from request 
+ * @param {Joi.Schema} userInputSchema The schema against to validate input
  * @return {IUser} Returns a new User object mapped
  */
-const buildFromInput = (attr: IUserInput): UserDoc => {
-    const { email, mfa, amt } = attr;
-    const firstName = attr[FIRST_NAME_INPUT_FIELD];
-    const lastName = attr[LAST_NAME_INPUT_FIELD];
-    const countryCode = attr[COUNTRY_INPUT_FIELD];
-    const referredBy = attr[REFERRED_BY_INPUT_FIELD];
-    const dob = Date.parse(attr.dob);
-    const createdDate = Date.parse(attr.createdDate);
+const buildFromInput = (userInput: IUserInput, userInputSchema: Joi.Schema): UserDoc => {
+    Joi.assert(userInput, userInputSchema);
+    const { email, mfa, amt } = userInput;
+    const firstName = userInput[FIRST_NAME_INPUT_FIELD];
+    const lastName = userInput[LAST_NAME_INPUT_FIELD];
+    const countryCode = userInput[COUNTRY_INPUT_FIELD];
+    const referredBy = userInput[REFERRED_BY_INPUT_FIELD];
+    const dob = Date.parse(userInput.dob);
+    const createdDate = Date.parse(userInput.createdDate);
 
     return new User({ firstName, lastName, countryCode, email, dob, mfa, amt, createdDate, referredBy });
 }
 
-// const buildFromBulkInput = (userRequests: IUserInput[]): UserDoc[] => {
-//     const mappedUsers = userRequests.map(user => {
-//         return User.buildFromRequest(user)
-//     });
-//     return mappedUsers;
-// }
+const insertBulkUsers = async (userRequests: IUserInput[]): Promise<any> => {
+    let usersSaved: any = {};
+
+    try {
+        const mappedUsers: UserDoc[] = userRequests.map(userInput => {
+            return buildFromInput(userInput, userInputSchema);
+        });
+
+        return User.insertMany(mappedUsers, { ordered: false, rawResult: true })
+            .then(data => {
+                return data;
+            }).catch(error => {
+                return error;
+            });
+    } catch (error) {
+        throw error;
+    }
+}
 
 const createUser = async (userInput: IUserInput): Promise<UserDoc> => {
     let newUserDoc: UserDoc = new User();
     try {
-        Joi.assert(userInput, userInputSchemaValidator);
-        const userDoc: UserDoc = buildFromInput(userInput);
+        const userDoc: UserDoc = buildFromInput(userInput, userInputSchema);
         newUserDoc = await User.create(userDoc);
     } catch (error) {
         throw error;
@@ -75,4 +88,4 @@ const createUser = async (userInput: IUserInput): Promise<UserDoc> => {
     return newUserDoc;
 }
 
-export default { createUser }
+export default { createUser, insertBulkUsers }

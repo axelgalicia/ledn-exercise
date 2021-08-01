@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 interface IUser {
-    _id?: string,
+    id?: string,
     firstName: string,
     lastName: string,
     countryCode: string,
@@ -18,7 +18,7 @@ interface UserModelInterface extends mongoose.Model<UserDoc> {
 }
 
 interface UserDoc extends mongoose.Document {
-    _id?: string,
+    id?: string,
     firstName: string,
     lastName: string,
     countryCode: string,

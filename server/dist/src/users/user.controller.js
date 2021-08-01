@@ -50,39 +50,56 @@ var FIRST_NAME_INPUT_FIELD = "First Name";
 var LAST_NAME_INPUT_FIELD = "Last Name";
 var COUNTRY_INPUT_FIELD = "Country";
 var REFERRED_BY_INPUT_FIELD = "ReferredBy";
-var userInputSchemaValidator = joi_1.default.object((_a = {},
-    _a[FIRST_NAME_INPUT_FIELD] = joi_1.default.string().alphanum().required(),
-    _a[LAST_NAME_INPUT_FIELD] = joi_1.default.string().alphanum().required(),
-    _a[COUNTRY_INPUT_FIELD] = joi_1.default.string().alphanum().min(2).required(),
+var userInputSchema = joi_1.default.object((_a = {},
+    _a[FIRST_NAME_INPUT_FIELD] = joi_1.default.string().required(),
+    _a[LAST_NAME_INPUT_FIELD] = joi_1.default.string().required(),
+    _a[COUNTRY_INPUT_FIELD] = joi_1.default.string().alphanum().min(2).max(4).required(),
     _a.email = joi_1.default.string().email().required(),
     _a.dob = joi_1.default.date().required(),
-    _a.mfa = joi_1.default.string().alphanum(),
+    _a.mfa = joi_1.default.string(),
     _a.amt = joi_1.default.number().min(0).required(),
     _a.createdDate = joi_1.default.date().required(),
-    _a[REFERRED_BY_INPUT_FIELD] = joi_1.default.string(),
+    _a[REFERRED_BY_INPUT_FIELD] = joi_1.default.string().allow(null),
     _a));
 /**
  * Converts IUserInput to IUser
  *
- * @param {IUserInput} attr The user's input from request
+ * @param {IUserInput} userInput The user's input from request
+ * @param {Joi.Schema} userInputSchema The schema against to validate input
  * @return {IUser} Returns a new User object mapped
  */
-var buildFromInput = function (attr) {
-    var email = attr.email, mfa = attr.mfa, amt = attr.amt;
-    var firstName = attr[FIRST_NAME_INPUT_FIELD];
-    var lastName = attr[LAST_NAME_INPUT_FIELD];
-    var countryCode = attr[COUNTRY_INPUT_FIELD];
-    var referredBy = attr[REFERRED_BY_INPUT_FIELD];
-    var dob = Date.parse(attr.dob);
-    var createdDate = Date.parse(attr.createdDate);
+var buildFromInput = function (userInput, userInputSchema) {
+    joi_1.default.assert(userInput, userInputSchema);
+    var email = userInput.email, mfa = userInput.mfa, amt = userInput.amt;
+    var firstName = userInput[FIRST_NAME_INPUT_FIELD];
+    var lastName = userInput[LAST_NAME_INPUT_FIELD];
+    var countryCode = userInput[COUNTRY_INPUT_FIELD];
+    var referredBy = userInput[REFERRED_BY_INPUT_FIELD];
+    var dob = Date.parse(userInput.dob);
+    var createdDate = Date.parse(userInput.createdDate);
     return new user_model_1.User({ firstName: firstName, lastName: lastName, countryCode: countryCode, email: email, dob: dob, mfa: mfa, amt: amt, createdDate: createdDate, referredBy: referredBy });
 };
-// const buildFromBulkInput = (userRequests: IUserInput[]): UserDoc[] => {
-//     const mappedUsers = userRequests.map(user => {
-//         return User.buildFromRequest(user)
-//     });
-//     return mappedUsers;
-// }
+var insertBulkUsers = function (userRequests) { return __awaiter(void 0, void 0, void 0, function () {
+    var usersSaved, mappedUsers;
+    return __generator(this, function (_a) {
+        usersSaved = {};
+        try {
+            mappedUsers = userRequests.map(function (userInput) {
+                return buildFromInput(userInput, userInputSchema);
+            });
+            return [2 /*return*/, user_model_1.User.insertMany(mappedUsers, { ordered: false, rawResult: true })
+                    .then(function (data) {
+                    return data;
+                }).catch(function (error) {
+                    return error;
+                })];
+        }
+        catch (error) {
+            throw error;
+        }
+        return [2 /*return*/];
+    });
+}); };
 var createUser = function (userInput) { return __awaiter(void 0, void 0, void 0, function () {
     var newUserDoc, userDoc, error_1;
     return __generator(this, function (_a) {
@@ -92,8 +109,7 @@ var createUser = function (userInput) { return __awaiter(void 0, void 0, void 0,
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                joi_1.default.assert(userInput, userInputSchemaValidator);
-                userDoc = buildFromInput(userInput);
+                userDoc = buildFromInput(userInput, userInputSchema);
                 return [4 /*yield*/, user_model_1.User.create(userDoc)];
             case 2:
                 newUserDoc = _a.sent();
@@ -105,4 +121,4 @@ var createUser = function (userInput) { return __awaiter(void 0, void 0, void 0,
         }
     });
 }); };
-exports.default = { createUser: createUser };
+exports.default = { createUser: createUser, insertBulkUsers: insertBulkUsers };

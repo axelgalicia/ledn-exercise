@@ -80,13 +80,49 @@ var buildFromInput = function (userInput, userInputSchema) {
     return new user_model_1.User({ firstName: firstName, lastName: lastName, countryCode: countryCode, email: email, dob: dob, mfa: mfa, amt: amt, createdDate: createdDate, referredBy: referredBy });
 };
 /**
+ * Queries User collection
+ *
+ *
+ * @param {IUserInput} userInput IUserInput object to be inserted into the db
+ * @returns {UserDoc[]} Returs the array of UserDocs matching the query
+ */
+var findAllUsers = function (filters) { return __awaiter(void 0, void 0, void 0, function () {
+    var matchedUsers, query, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                matchedUsers = [];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                console.log('sortBy: ', filters.sortBy);
+                query = user_model_1.User.find();
+                // Like Filters
+                filterLikeBy('firstName', filters, query);
+                filterLikeBy('lastName', filters, query);
+                // Exact Match
+                filterByEquals('countryCode', filters, query);
+                filterByEquals('mfa', filters, query);
+                // Sorting
+                sortBy(filters.sortBy, query);
+                return [4 /*yield*/, query.exec()];
+            case 2:
+                matchedUsers = _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                error_1 = _a.sent();
+                throw error_1;
+            case 4: return [2 /*return*/, matchedUsers];
+        }
+    });
+}); };
+/**
  * Inserts a bulk array of IUserInput objects into the db
  * If record already exists based on unique key, this will
  * be skipped but the response will refer that record as not
  * inseted due to duplicate key.
  *
  * @param {IUserInput[]} userInputs Array of IUserInput to insert into the db
- *
  * @returns {any} Returs MongoDB report of insertions
  */
 var insertBulkUsers = function (userInputs) { return __awaiter(void 0, void 0, void 0, function () {
@@ -114,11 +150,10 @@ var insertBulkUsers = function (userInputs) { return __awaiter(void 0, void 0, v
  *
  *
  * @param {IUserInput} userInput IUserInput object to be inserted into the db
- *
  * @returns {UserDoc} Returs the inserted UserDoc object including _Id
  */
 var createUser = function (userInput) { return __awaiter(void 0, void 0, void 0, function () {
-    var newUserDoc, userDoc, error_1;
+    var newUserDoc, userDoc, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -132,8 +167,8 @@ var createUser = function (userInput) { return __awaiter(void 0, void 0, void 0,
                 newUserDoc = _a.sent();
                 return [3 /*break*/, 4];
             case 3:
-                error_1 = _a.sent();
-                throw error_1;
+                error_2 = _a.sent();
+                throw error_2;
             case 4: return [2 /*return*/, newUserDoc];
         }
     });
@@ -143,13 +178,11 @@ var createUser = function (userInput) { return __awaiter(void 0, void 0, void 0,
  *
  * -- TESTING PURPOSES --
  *
- *
  * @param {IUserInput} userInput IUserInput object to be inserted into the db
- *
  * @returns {UserDoc} Returs the inserted UserDoc object including _Id
  */
 var deleteAllUsers = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var error_2;
+    var error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -159,10 +192,55 @@ var deleteAllUsers = function () { return __awaiter(void 0, void 0, void 0, func
                 _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                error_2 = _a.sent();
-                throw error_2;
+                error_3 = _a.sent();
+                throw error_3;
             case 3: return [2 /*return*/];
         }
     });
 }); };
-exports.default = { createUser: createUser, insertBulkUsers: insertBulkUsers, deleteAllUsers: deleteAllUsers };
+var filterByEquals = function (fieldName, filters, query) {
+    if (isFilterPresent(fieldName, filters)) {
+        query.where(fieldName).equals(filters[fieldName]);
+    }
+};
+var filterLikeBy = function (fieldName, filters, query) {
+    if (isFilterPresent(fieldName, filters)) {
+        query.where(fieldName, { $regex: filters[fieldName], $options: 'i' });
+    }
+};
+var sortBy = function (sortByFields, query) {
+    if (!!sortByFields) {
+        validateSorting(sortByFields);
+        var sortByArray = convertToSortByArray(sortByFields);
+        querySort(sortByArray, query);
+    }
+};
+var validateSorting = function (sortByFields) {
+    if (!sortByFields)
+        return;
+    Object.values(sortByFields).map(function (orderType) {
+        validateOrderType(orderType);
+    });
+};
+var convertToSortByArray = function (sortByFields) {
+    var sortByArray = [];
+    if (!!sortByFields.amt) {
+        sortByArray.push(['amt', sortByFields.amt]);
+    }
+    if (!!sortByFields.createdDate) {
+        sortByArray.push(['createdDate', sortByFields.createdDate]);
+    }
+    return sortByArray;
+};
+var validateOrderType = function (orderType) {
+    if (!orderType || (orderType !== 'asc' && orderType !== 'desc')) {
+        throw new Error('Invalid sorting type, allowed [asc, desc]');
+    }
+};
+var isFilterPresent = function (fieldName, filters) {
+    return !!filters[fieldName];
+};
+var querySort = function (sortByArray, query) {
+    query.sort(sortByArray);
+};
+exports.default = { createUser: createUser, insertBulkUsers: insertBulkUsers, deleteAllUsers: deleteAllUsers, findAllUsers: findAllUsers };

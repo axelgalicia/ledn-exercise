@@ -45,9 +45,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRouter = void 0;
 var express_1 = __importDefault(require("express"));
-var logger_1 = require("../logger/logger");
 var user_controller_1 = __importDefault(require("./user.controller"));
-var user_model_1 = require("./user.model");
 var router = express_1.default.Router();
 exports.userRouter = router;
 /**
@@ -59,12 +57,11 @@ exports.userRouter = router;
  * @param req Http Request
  * @param res Http Response
  * @param next Next Function
- *
  * @returns {UserDoc[]} Returns the list of all UserDoc[]
  *
  */
 router.get('/api/users', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var users, e_1;
+    var users, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -72,13 +69,14 @@ router.get('/api/users', function (req, res, next) { return __awaiter(void 0, vo
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, user_model_1.User.find({})];
+                return [4 /*yield*/, user_controller_1.default.findAllUsers(req.query)];
             case 2:
                 users = _a.sent();
                 return [3 /*break*/, 4];
             case 3:
-                e_1 = _a.sent();
-                return [2 /*return*/, res.status(500).send('User could not be saved')];
+                error_1 = _a.sent();
+                next(error_1);
+                return [3 /*break*/, 4];
             case 4: return [2 /*return*/, res.send(users)];
         }
     });
@@ -92,12 +90,11 @@ router.get('/api/users', function (req, res, next) { return __awaiter(void 0, vo
  * @param req Http Request
  * @param res Http Response
  * @param next Next Function
- *
  * @returns {UserDoc} Returns the new UserDoc added
  *
  */
 router.post('/api/users', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, error_1;
+    var user, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -107,8 +104,8 @@ router.post('/api/users', [], function (req, res, next) { return __awaiter(void 
                 user = _a.sent();
                 return [2 /*return*/, res.status(200).send(user)];
             case 2:
-                error_1 = _a.sent();
-                next(error_1);
+                error_2 = _a.sent();
+                next(error_2);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
@@ -123,12 +120,11 @@ router.post('/api/users', [], function (req, res, next) { return __awaiter(void 
  * @param req Http Request
  * @param res Http Response
  * @param next Next Function
- *
  * @returns {any}
  *
  */
 router.post('/api/users/bulk', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var usersSaved, error_2;
+    var usersSaved, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -138,8 +134,8 @@ router.post('/api/users/bulk', [], function (req, res, next) { return __awaiter(
                 usersSaved = _a.sent();
                 return [2 /*return*/, res.status(200).send(usersSaved)];
             case 2:
-                error_2 = _a.sent();
-                next(error_2);
+                error_3 = _a.sent();
+                next(error_3);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
@@ -154,24 +150,22 @@ router.post('/api/users/bulk', [], function (req, res, next) { return __awaiter(
  * @param req Http Request
  * @param res Http Response
  * @param next Next Function
- *
  * @returns {Void}
  *
  */
 router.delete('/api/users', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var error_3;
+    var error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                logger_1.Logger.info('Deleting all users..');
                 return [4 /*yield*/, user_controller_1.default.deleteAllUsers()];
             case 1:
                 _a.sent();
                 return [2 /*return*/, res.status(204).send()];
             case 2:
-                error_3 = _a.sent();
-                next(error_3);
+                error_4 = _a.sent();
+                next(error_4);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }

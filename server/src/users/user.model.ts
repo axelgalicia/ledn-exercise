@@ -6,16 +6,16 @@
 import mongoose from 'mongoose';
 
 interface IUser {
-    id?: string,
-    firstName: string,
-    lastName: string,
-    countryCode: string,
-    email: string,
-    dob: Date,
-    mfa?: string,
-    amt: number,
-    createdDate: Date,
-    referredBy?: string
+    id?: string;
+    firstName: string;
+    lastName: string;
+    countryCode: string;
+    email: string;
+    dob: Date;
+    mfa?: string;
+    amt: number;
+    createdDate: Date;
+    referredBy?: string;
 }
 
 interface UserModelInterface extends mongoose.Model<UserDoc> {
@@ -23,16 +23,16 @@ interface UserModelInterface extends mongoose.Model<UserDoc> {
 }
 
 interface UserDoc extends mongoose.Document {
-    id?: string,
-    firstName: string,
-    lastName: string,
-    countryCode: string,
-    email: string,
-    dob: Date,
-    mfa?: string,
-    amt: number,
-    createdDate: Date,
-    referredBy?: string
+    id?: string;
+    firstName: string;
+    lastName: string;
+    countryCode: string;
+    email: string;
+    dob: Date;
+    mfa?: string;
+    amt: number;
+    createdDate: Date;
+    referredBy?: string;
 }
 
 const options = { discriminatorKey: 'email' };

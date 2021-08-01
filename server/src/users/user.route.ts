@@ -6,7 +6,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { Logger } from '../logger/logger';
 import UserController from './user.controller';
-import { User, UserDoc } from './user.model';
+import { UserDoc } from './user.model';
 
 
 const router = express.Router();
@@ -21,7 +21,6 @@ const router = express.Router();
  * @param req Http Request
  * @param res Http Response
  * @param next Next Function
- * 
  * @returns {UserDoc[]} Returns the list of all UserDoc[]
  * 
  */
@@ -29,9 +28,9 @@ router.get('/api/users', async (req: Request, res: Response, next: NextFunction)
 
     let users = null;
     try {
-        users = await User.find({});
-    } catch (e) {
-        return res.status(500).send('User could not be saved');
+        users = await UserController.findAllUsers(req.query);
+    } catch (error) {
+        next(error);
     }
 
     return res.send(users);
@@ -47,7 +46,6 @@ router.get('/api/users', async (req: Request, res: Response, next: NextFunction)
  * @param req Http Request
  * @param res Http Response
  * @param next Next Function
- * 
  * @returns {UserDoc} Returns the new UserDoc added
  * 
  */
@@ -72,7 +70,6 @@ router.post('/api/users', [], async (req: Request, res: Response, next: NextFunc
  * @param req Http Request
  * @param res Http Response
  * @param next Next Function
- * 
  * @returns {any}
  * 
  */
@@ -94,13 +91,11 @@ router.post('/api/users/bulk', [], async (req: Request, res: Response, next: Nex
  * @param req Http Request
  * @param res Http Response
  * @param next Next Function
- * 
  * @returns {Void}
  * 
  */
 router.delete('/api/users', [], async (req: Request, res: Response, next: NextFunction) => {
     try {
-        Logger.info('Deleting all users..');
         await UserController.deleteAllUsers();
         return res.status(204).send();
     }

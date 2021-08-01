@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { Logger } from '../logger/logger';
 import UserController from './user.controller';
 import { User, UserDoc } from './user.model';
@@ -39,16 +39,15 @@ router.get('/api/users', async (req: Request, res: Response) => {
  * @Return Returns the new UserDoc added
  * 
  */
-router.post('/api/users', [], async (req: Request, res: Response) => {
-    let user: UserDoc = new User();
+router.post('/api/users', [], async (req: Request, res: Response, next: NextFunction) => {
+
     try {
-        user = await UserController.CreateUser(req.body);
-    } catch (e) {
-        Logger.error('Error to save new user :', e);
-        return res.status(500).send(e);
+        let user: UserDoc = await UserController.createUser(req.body);
+        return res.status(200).send(user);
+    } catch (error) {
+        next(error);
     }
-    Logger.info('New user saved');
-    return res.status(200).send(user);
+
 });
 
 

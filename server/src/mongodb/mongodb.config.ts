@@ -1,3 +1,8 @@
+/**
+ * @description MongoDB connection configuration.
+ * @author Axel Galicia - axelgalicia@gmail.com
+ */
+
 
 const MONGO_USER = process.env.LEDN_MONGO_USER;
 const MONGO_PASSWORD = process.env.LEDN_MONGO_PASSWORD;
@@ -14,7 +19,7 @@ interface IMongoDBConfig {
     db: string | undefined;
 }
 
-export const mongoConfig: IMongoDBConfig = {
+export const mongoDBConfig: IMongoDBConfig = {
     hostname: MONGO_HOSTNAME,
     port: MONGO_PORT,
     user: MONGO_USER,

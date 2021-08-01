@@ -41,7 +41,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRouter = void 0;
 var express_1 = __importDefault(require("express"));
-var logger_1 = require("../logger/logger");
 var user_controller_1 = __importDefault(require("./user.controller"));
 var user_model_1 = require("./user.model");
 var router = express_1.default.Router();
@@ -85,26 +84,21 @@ router.get('/api/users', function (req, res) { return __awaiter(void 0, void 0, 
  * @Return Returns the new UserDoc added
  *
  */
-router.post('/api/users', [], function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, e_2;
+router.post('/api/users', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                user = new user_model_1.User();
-                _a.label = 1;
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, user_controller_1.default.createUser(req.body)];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, user_controller_1.default.CreateUser(req.body)];
-            case 2:
                 user = _a.sent();
-                return [3 /*break*/, 4];
-            case 3:
-                e_2 = _a.sent();
-                logger_1.Logger.error('Error to save new user :', e_2);
-                return [2 /*return*/, res.status(500).send(e_2)];
-            case 4:
-                logger_1.Logger.info('New user saved');
                 return [2 /*return*/, res.status(200).send(user)];
+            case 2:
+                error_1 = _a.sent();
+                next(error_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });
@@ -142,7 +136,7 @@ router.post('/api/users', [], function (req, res) { return __awaiter(void 0, voi
  *
  */
 router.delete('/api/users', [], function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var e_3;
+    var e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -155,8 +149,8 @@ router.delete('/api/users', [], function (req, res) { return __awaiter(void 0, v
                 _a.sent();
                 return [3 /*break*/, 4];
             case 3:
-                e_3 = _a.sent();
-                console.log('could not delete', e_3);
+                e_2 = _a.sent();
+                console.log('could not delete', e_2);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/, res.status(201).send('All Users deleted')];
         }

@@ -1,5 +1,11 @@
+/**
+ * @description Defines the controller for the User object.
+ * @author Axel Galicia - axelgalicia@gmail.com
+ */
+
 import { UserDoc, User } from "./user.model";
-import * as Joi from 'joi';
+import Joi from 'joi';
+import { Logger } from "../logger/logger";
 
 
 const FIRST_NAME_INPUT_FIELD = "First Name";
@@ -19,18 +25,25 @@ interface IUserInput {
     [REFERRED_BY_INPUT_FIELD]?: string
 }
 
-const userDocSchemaValidator = Joi.object({
-    firstName: Joi.string().alphanum().required(),
-    lastName: Joi.string().alphanum().required(),
-    countryCode: Joi.string().alphanum().min(2).required(),
+const userInputSchemaValidator = Joi.object({
+    [FIRST_NAME_INPUT_FIELD]: Joi.string().alphanum().required(),
+    [LAST_NAME_INPUT_FIELD]: Joi.string().alphanum().required(),
+    [COUNTRY_INPUT_FIELD]: Joi.string().alphanum().min(2).required(),
     email: Joi.string().email().required(),
     dob: Joi.date().required(),
     mfa: Joi.string().alphanum(),
     amt: Joi.number().min(0).required(),
-    createdDate: Joi.date().required()
-
+    createdDate: Joi.date().required(),
+    [REFERRED_BY_INPUT_FIELD]: Joi.string(),
 })
 
+
+/**
+ * Converts IUserInput to IUser
+ * 
+ * @param {IUserInput} attr The user's input from request 
+ * @return {IUser} Returns a new User object mapped
+ */
 const buildFromInput = (attr: IUserInput): UserDoc => {
     const { email, mfa, amt } = attr;
     const firstName = attr[FIRST_NAME_INPUT_FIELD];
@@ -50,12 +63,16 @@ const buildFromInput = (attr: IUserInput): UserDoc => {
 //     return mappedUsers;
 // }
 
-const CreateUser = async (userInput: IUserInput) => {
-    const userDoc: UserDoc = buildFromInput(userInput);
-    // userDocSchemaValidator.validate(userDoc);
-    const newUserDoc: UserDoc = await User.create(userDoc);
-    console.log('New user created:', newUserDoc);
+const createUser = async (userInput: IUserInput): Promise<UserDoc> => {
+    let newUserDoc: UserDoc = new User();
+    try {
+        Joi.assert(userInput, userInputSchemaValidator);
+        const userDoc: UserDoc = buildFromInput(userInput);
+        newUserDoc = await User.create(userDoc);
+    } catch (error) {
+        throw error;
+    }
     return newUserDoc;
 }
 
-export default { CreateUser }
+export default { createUser }

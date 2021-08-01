@@ -1,4 +1,9 @@
 "use strict";
+/**
+ * @description Component to define the global Logger
+ *              for the application.
+ * @author Axel Galicia - axelgalicia@gmail.com
+ */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };

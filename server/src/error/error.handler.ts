@@ -1,7 +1,8 @@
 /**
- * @description Defines an Erron handler class to properly return formatted errors
- *              to the user.
- * @author Axel Galicia - axelgalicia@gmail.com
+ *  Defines an Erron handler class to properly return formatted errors
+ *  to the user.
+ * 
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
 import { Logger } from "../logger/logger";

@@ -1,6 +1,7 @@
 /**
- * @description Defines Express Route for User Model
- * @author Axel Galicia - axelgalicia@gmail.com
+ * Defines Express Route for User Model
+ * 
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
 import express, { NextFunction, Request, Response } from 'express';

@@ -1,7 +1,8 @@
 /**
- * @description Contains methods to create MongoDB connection
- *              using Mongoose JS Library.
- * @author Axel Galicia - axelgalicia@gmail.com
+ * Contains methods to create MongoDB connection
+ * using Mongoose JS Library.
+ * 
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
 

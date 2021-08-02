@@ -1,6 +1,7 @@
 /**
- * @description MongoDB connection configuration.
- * @author Axel Galicia - axelgalicia@gmail.com
+ *  MongoDB connection configuration.
+ * 
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
 

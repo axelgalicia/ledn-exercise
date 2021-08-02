@@ -1,7 +1,8 @@
 /**
- * @description Component to define the global Logger
+ *  Component to define the global Logger
  *              for the application.
- * @author Axel Galicia - axelgalicia@gmail.com
+ * 
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
 import pino from 'pino';

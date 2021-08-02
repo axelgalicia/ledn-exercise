@@ -1,10 +1,10 @@
 /**
- * @description LEDN API Server - Starts an Express JS API
- *              which allows the user to query and insert Users
- *              into and from a NoSQL database. (MongoDB)
+ * LEDN API Server - Starts an Express JS API
+ * which allows the user to query and insert Users
+ * into and from a NoSQL database. (MongoDB)
  * 
  * 
- * @author Axel Galicia - axelgalicia@gmail.com
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
 import express, { Application, Request, Response, NextFunction } from 'express';

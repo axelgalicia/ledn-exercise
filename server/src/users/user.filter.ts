@@ -1,7 +1,8 @@
 
 /**
- * @description File to separate filters' creation
- * @author Axel Galicia - axelgalicia@gmail.com
+ * File to separate filters' creation
+ * 
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
 import { appConfig } from '../app.config';

@@ -1,6 +1,7 @@
 /**
- * @description Defines the controller for the User object.
- * @author Axel Galicia - axelgalicia@gmail.com
+ * Defines the controller for the User object.
+ * 
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
 import { UserDoc, User } from "./user.model";

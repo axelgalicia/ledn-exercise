@@ -1,6 +1,7 @@
 /**
- * @description Defines Mongoose User Model
- * @author Axel Galicia - axelgalicia@gmail.com
+ * Defines Mongoose User Model
+ * 
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
 import mongoose from 'mongoose';

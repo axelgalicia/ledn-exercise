@@ -4,6 +4,7 @@
  * @author Axel Galicia - axelgalicia@gmail.com
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+var app_config_1 = require("../app.config");
 var VALID_SORTING_FIELDS = ['amt', 'createdDate', 'dob', 'firstName', 'lastName', 'countryCode', 'mfa'];
 var filterByEquals = function (fieldName, filters, query) {
     if (isFilterPresent(fieldName, filters)) {
@@ -66,7 +67,8 @@ var addSortingField = function (fieldName, sortByFields, sortByArray) {
 var addPagination = function (filters, query) {
     try {
         var pageNum = !!filters.pageNumber ? parseInt(filters.pageNumber, 10) : 0;
-        var perPage = !!filters.itemsPerPage ? parseInt(filters.itemsPerPage, 10) : 20;
+        var perPage = !!filters.itemsPerPage ? parseInt(filters.itemsPerPage, 10) :
+            parseInt(app_config_1.appConfig.defaultItemsPerPage, 10);
         query.skip(pageNum > 0 ? ((pageNum - 1) * perPage) : 0);
         query.limit(perPage);
     }

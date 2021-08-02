@@ -4,6 +4,8 @@
  * @author Axel Galicia - axelgalicia@gmail.com
  */
 
+import { appConfig } from '../app.config';
+
 const VALID_SORTING_FIELDS = ['amt', 'createdDate', 'dob', 'firstName', 'lastName', 'countryCode', 'mfa'];
 
 type OrderType = 'asc' | 'desc' | undefined;
@@ -101,7 +103,8 @@ const addSortingField = (fieldName: string, sortByFields: any, sortByArray: Sort
 const addPagination = (filters: any, query: any): void => {
     try {
         const pageNum = !!filters.pageNumber ? parseInt(filters.pageNumber, 10) : 0;
-        const perPage = !!filters.itemsPerPage ? parseInt(filters.itemsPerPage, 10) : 20;
+        const perPage = !!filters.itemsPerPage ? parseInt(filters.itemsPerPage, 10) :
+            parseInt(appConfig.defaultItemsPerPage, 10);
         query.skip(pageNum > 0 ? ((pageNum - 1) * perPage) : 0);
         query.limit(perPage);
     }

@@ -1,7 +1,8 @@
 "use strict";
 /**
- * @description File to separate filters' creation
- * @author Axel Galicia - axelgalicia@gmail.com
+ * File to separate filters' creation
+ *
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_config_1 = require("../app.config");
@@ -66,19 +67,27 @@ var addSortingField = function (fieldName, sortByFields, sortByArray) {
 };
 var addPagination = function (filters, query) {
     try {
-        var pageNum = !!filters.pageNumber ? parseInt(filters.pageNumber, 10) : 0;
-        var perPage = !!filters.itemsPerPage ? parseInt(filters.itemsPerPage, 10) :
-            parseInt(app_config_1.appConfig.defaultItemsPerPage, 10);
-        query.skip(pageNum > 0 ? ((pageNum - 1) * perPage) : 0);
-        query.limit(perPage);
+        var pageNum = getPageNumber(filters);
+        var pageSize = getPageSize(filters);
+        query.skip(pageNum > 0 ? ((pageNum - 1) * pageSize) : 0);
+        query.limit(pageSize);
     }
     catch (error) {
         throw new Error('Invalid pagination parameters.');
     }
+};
+var getPageSize = function (filters) {
+    return !!filters.pageSize ? parseInt(filters.pageSize, 10) :
+        parseInt(app_config_1.appConfig.defaultPageSize, 10);
+};
+var getPageNumber = function (filters) {
+    return !!filters.pageNumber ? parseInt(filters.pageNumber, 10) : 0;
 };
 exports.default = {
     filterByEquals: filterByEquals,
     filterLikeBy: filterLikeBy,
     sortBy: sortBy,
     addPagination: addPagination,
+    getPageSize: getPageSize,
+    getPageNumber: getPageNumber,
 };

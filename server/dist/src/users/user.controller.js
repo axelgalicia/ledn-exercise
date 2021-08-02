@@ -1,7 +1,8 @@
 "use strict";
 /**
- * @description Defines the controller for the User object.
- * @author Axel Galicia - axelgalicia@gmail.com
+ * Defines the controller for the User object.
+ *
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -88,14 +89,20 @@ var buildFromInput = function (userInput, userInputSchema) {
  * @returns {UserDoc[]} Returs the array of UserDocs matching the query
  */
 var findAllUsers = function (filters) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, query, records, _a, error_1;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var response, query, totalBeforePagination, records, pageSize, pageNumber, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                response = { totalRecords: 0, totalMatched: 0, records: [] };
-                _b.label = 1;
+                response = {
+                    totalRecords: 0,
+                    pageSize: 0,
+                    pageCount: 0,
+                    currentPage: 1,
+                    records: [],
+                };
+                _a.label = 1;
             case 1:
-                _b.trys.push([1, 4, , 5]);
+                _a.trys.push([1, 5, , 6]);
                 query = user_model_1.User.find();
                 // Like Filters
                 user_filter_1.default.filterLikeBy('firstName', filters, query);
@@ -105,22 +112,27 @@ var findAllUsers = function (filters) { return __awaiter(void 0, void 0, void 0,
                 user_filter_1.default.filterByEquals('mfa', filters, query);
                 // Sorting
                 user_filter_1.default.sortBy(filters.sortBy, query);
+                return [4 /*yield*/, query.exec()];
+            case 2: return [4 /*yield*/, (_a.sent()).length];
+            case 3:
+                totalBeforePagination = _a.sent();
                 // Pagination
                 user_filter_1.default.addPagination(filters, query);
                 return [4 /*yield*/, query.exec()];
-            case 2:
-                records = _b.sent();
-                _a = response;
-                return [4 /*yield*/, user_model_1.User.count()];
-            case 3:
-                _a.totalRecords = _b.sent();
-                response.totalMatched = records.length;
-                response.records = records;
-                return [3 /*break*/, 5];
             case 4:
-                error_1 = _b.sent();
+                records = _a.sent();
+                pageSize = user_filter_1.default.getPageSize(filters);
+                pageNumber = user_filter_1.default.getPageNumber(filters);
+                response.totalRecords = totalBeforePagination;
+                response.pageCount = Math.ceil(totalBeforePagination / pageSize);
+                response.pageSize = pageSize;
+                response.currentPage = pageNumber;
+                response.records = records;
+                return [3 /*break*/, 6];
+            case 5:
+                error_1 = _a.sent();
                 throw error_1;
-            case 5: return [2 /*return*/, response];
+            case 6: return [2 /*return*/, response];
         }
     });
 }); };

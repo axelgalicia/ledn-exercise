@@ -1,7 +1,8 @@
 "use strict";
 /**
- * @description Defines Express Route for User Model
- * @author Axel Galicia - axelgalicia@gmail.com
+ * Defines Express Route for User Model
+ *
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }

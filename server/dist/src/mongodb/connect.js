@@ -1,8 +1,9 @@
 "use strict";
 /**
- * @description Contains methods to create MongoDB connection
- *              using Mongoose JS Library.
- * @author Axel Galicia - axelgalicia@gmail.com
+ * Contains methods to create MongoDB connection
+ * using Mongoose JS Library.
+ *
+ * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };

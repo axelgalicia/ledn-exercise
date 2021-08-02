@@ -29,7 +29,7 @@ export interface IUserQueryFilters {
     mfa?: string;
     countryCode?: string;
     pageNumber?: string;
-    itemsPerPage?: string;
+    pageSize?: string;
 }
 
 const filterByEquals = (fieldName: string, filters: any, query: any): void => {
@@ -103,15 +103,23 @@ const addSortingField = (fieldName: string, sortByFields: any, sortByArray: Sort
 
 const addPagination = (filters: any, query: any): void => {
     try {
-        const pageNum = !!filters.pageNumber ? parseInt(filters.pageNumber, 10) : 0;
-        const perPage = !!filters.itemsPerPage ? parseInt(filters.itemsPerPage, 10) :
-            parseInt(appConfig.defaultItemsPerPage, 10);
-        query.skip(pageNum > 0 ? ((pageNum - 1) * perPage) : 0);
-        query.limit(perPage);
+        const pageNum = getPageNumber(filters);
+        const pageSize = getPageSize(filters);
+        query.skip(pageNum > 0 ? ((pageNum - 1) * pageSize) : 0);
+        query.limit(pageSize);
     }
     catch (error) {
         throw new Error('Invalid pagination parameters.');
     }
+}
+
+const getPageSize = (filters: any): number => {
+    return !!filters.pageSize ? parseInt(filters.pageSize, 10) :
+        parseInt(appConfig.defaultPageSize, 10);
+}
+
+const getPageNumber = (filters: any): number => {
+    return !!filters.pageNumber ? parseInt(filters.pageNumber, 10) : 0;
 }
 
 export default {
@@ -119,4 +127,6 @@ export default {
     filterLikeBy,
     sortBy,
     addPagination,
+    getPageSize,
+    getPageNumber,
 }

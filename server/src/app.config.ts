@@ -5,16 +5,16 @@
  */
 
 const APP_PORT = process.env.LEDN_PORT ?? '3000';
-const DEFAULT_ITEMS_PER_PAGE = process.env.LEDN_DEFAULT_ITEMS_PER_PAGE ?? '20';
+const DEFAULT_PAGE_SIZE = process.env.LEDN_DEFAULT_PAGE_SIZE ?? '20';
 
 
 interface IAppConfig {
     appPort: string;
-    defaultItemsPerPage: string;
+    defaultPageSize: string;
 }
 
 
 export const appConfig: IAppConfig = {
     appPort: APP_PORT,
-    defaultItemsPerPage: DEFAULT_ITEMS_PER_PAGE
+    defaultPageSize: DEFAULT_PAGE_SIZE
 }

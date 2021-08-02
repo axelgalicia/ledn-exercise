@@ -29,7 +29,9 @@ interface IUserInput {
 
 interface IUserListResponse {
     totalRecords: number;
-    totalMatched: number;
+    pageCount: number;
+    pageSize: number;
+    currentPage: number;
     records: UserDoc[];
 }
 
@@ -75,7 +77,15 @@ const buildFromInput = (userInput: IUserInput, userInputSchema: Joi.Schema): Use
  * @returns {UserDoc[]} Returs the array of UserDocs matching the query
  */
 const findAllUsers = async (filters: IUserQueryFilters): Promise<IUserListResponse> => {
-    let response: IUserListResponse = { totalRecords: 0, totalMatched: 0, records: [] };
+
+    let response: IUserListResponse = {
+        totalRecords: 0,
+        pageSize: 0,
+        pageCount: 0,
+        currentPage: 1,
+        records: [],
+    };
+
     try {
 
         let query = User.find();
@@ -90,18 +100,26 @@ const findAllUsers = async (filters: IUserQueryFilters): Promise<IUserListRespon
         // Sorting
         Filter.sortBy(filters.sortBy, query);
 
+        // Used to know total of pages
+        const totalBeforePagination: number = await (await query.exec()).length;
+
         // Pagination
         Filter.addPagination(filters, query);
 
         const records: UserDoc[] = await query.exec();
+        const pageSize: number = Filter.getPageSize(filters);
+        const pageNumber: number = Filter.getPageNumber(filters);
 
-        response.totalRecords = await User.count();
-        response.totalMatched = records.length;
+        response.totalRecords = totalBeforePagination;
+        response.pageCount = Math.ceil(totalBeforePagination / pageSize);
+        response.pageSize = pageSize;
+        response.currentPage = pageNumber;
         response.records = records;
 
     } catch (error) {
         throw error;
     }
+
     return response;
 }
 

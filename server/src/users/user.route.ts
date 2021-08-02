@@ -29,11 +29,10 @@ router.get('/api/users', async (req: Request, res: Response, next: NextFunction)
     let users = null;
     try {
         users = await UserController.findAllUsers(req.query);
+        return res.send(users);
     } catch (error) {
         next(error);
     }
-
-    return res.send(users);
 });
 
 

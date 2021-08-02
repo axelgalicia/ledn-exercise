@@ -5,6 +5,7 @@
 
 import { UserDoc, User } from "./user.model";
 import Joi from 'joi';
+import Filter, { IUserQueryFilters } from "./user.filter";
 
 
 const FIRST_NAME_INPUT_FIELD = "First Name";
@@ -12,8 +13,6 @@ const LAST_NAME_INPUT_FIELD = "Last Name";
 const COUNTRY_INPUT_FIELD = "Country";
 const REFERRED_BY_INPUT_FIELD = "ReferredBy";
 
-type OrderType = 'asc' | 'desc' | undefined;
-type SortByArray = [string, OrderType][];
 
 interface IUserInput {
     [FIRST_NAME_INPUT_FIELD]: string;
@@ -27,19 +26,10 @@ interface IUserInput {
     [REFERRED_BY_INPUT_FIELD]?: string;
 }
 
-interface ISortByFields {
-    amt?: OrderType;
-    createdDate: OrderType;
-}
-
-interface IUserQueryFilters {
-    firstName?: string;
-    lastName?: string;
-    sortBy?: ISortByFields;
-    mfa?: string;
-    countryCode?: string;
-    limit?: number;
-    skip?: number;
+interface IUserListResponse {
+    totalRecords: number;
+    totalMatched: number;
+    records: UserDoc[];
 }
 
 const userInputSchema = Joi.object({
@@ -83,27 +73,35 @@ const buildFromInput = (userInput: IUserInput, userInputSchema: Joi.Schema): Use
  * @param {IUserInput} userInput IUserInput object to be inserted into the db
  * @returns {UserDoc[]} Returs the array of UserDocs matching the query
  */
-const findAllUsers = async (filters: IUserQueryFilters): Promise<UserDoc[]> => {
-    let matchedUsers: UserDoc[] = [];
+const findAllUsers = async (filters: IUserQueryFilters): Promise<IUserListResponse> => {
+    let response: IUserListResponse = { totalRecords: 0, totalMatched: 0, records: [] };
     try {
 
         let query = User.find();
         // Like Filters
-        filterLikeBy('firstName', filters, query);
-        filterLikeBy('lastName', filters, query);
+        Filter.filterLikeBy('firstName', filters, query);
+        Filter.filterLikeBy('lastName', filters, query);
 
         // Exact Match
-        filterByEquals('countryCode', filters, query);
-        filterByEquals('mfa', filters, query);
+        Filter.filterByEquals('countryCode', filters, query);
+        Filter.filterByEquals('mfa', filters, query);
 
         // Sorting
-        sortBy(filters.sortBy, query);
+        Filter.sortBy(filters.sortBy, query);
 
-        matchedUsers = await query.exec();
+        // Pagination
+        Filter.addPagination(filters, query);
+
+        const records: UserDoc[] = await query.exec();
+
+        response.totalRecords = await User.count();
+        response.totalMatched = records.length;
+        response.records = records;
+
     } catch (error) {
         throw error;
     }
-    return matchedUsers;
+    return response;
 }
 
 /**
@@ -165,59 +163,6 @@ const deleteAllUsers = async (): Promise<void> => {
     } catch (error) {
         throw error;
     }
-}
-
-
-const filterByEquals = (fieldName: string, filters: any, query: any): void => {
-    if (isFilterPresent(fieldName, filters)) {
-        query.where(fieldName).equals(filters[fieldName]);
-    }
-}
-
-const filterLikeBy = (fieldName: string, filters: any, query: any): void => {
-    if (isFilterPresent(fieldName, filters)) {
-        query.where(fieldName, { $regex: filters[fieldName], $options: 'i' });
-    }
-}
-
-const sortBy = (sortByFields: ISortByFields | undefined, query: any): void => {
-    if (!!sortByFields) {
-        validateSorting(sortByFields);
-        const sortByArray: SortByArray = convertToSortByArray(sortByFields);
-        querySort(sortByArray, query);
-    }
-}
-
-const validateSorting = (sortByFields: ISortByFields): void => {
-    if (!sortByFields) return;
-    Object.values(sortByFields).map((orderType: OrderType) => {
-        validateOrderType(orderType);
-    });
-}
-
-const convertToSortByArray = (sortByFields: ISortByFields): SortByArray => {
-    let sortByArray: SortByArray = [];
-    if (!!sortByFields.amt) {
-        sortByArray.push(['amt', sortByFields.amt]);
-    }
-    if (!!sortByFields.createdDate) {
-        sortByArray.push(['createdDate', sortByFields.createdDate]);
-    }
-    return sortByArray;
-}
-
-const validateOrderType = (orderType: OrderType): void => {
-    if (!orderType || (orderType !== 'asc' && orderType !== 'desc')) {
-        throw new Error('Invalid sorting type, allowed [asc, desc]');
-    }
-}
-
-const isFilterPresent = (fieldName: string, filters: any): boolean => {
-    return !!filters[fieldName];
-}
-
-const querySort = (sortByArray: SortByArray, query: any): void => {
-    query.sort(sortByArray);
 }
 
 

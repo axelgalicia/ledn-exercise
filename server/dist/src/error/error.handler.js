@@ -67,7 +67,9 @@ var ErrorHandler = /** @class */ (function () {
                         return [4 /*yield*/, this.handleValidationError(error, res, next)];
                     case 2:
                         _a.sent();
-                        logger_1.Logger.error(error);
+                        return [4 /*yield*/, this.handleOtherError(error, res, next)];
+                    case 3:
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });
@@ -126,6 +128,28 @@ var ErrorHandler = /** @class */ (function () {
             });
         });
     };
+    /**
+     *
+     * Handles all errors not handled from others handlers
+     *
+     * @param error The Error object
+     * @param res Http Response
+     * @param next Next Function Callback
+     *
+     */
+    ErrorHandler.prototype.handleOtherError = function (error, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var trackingCode, responseError;
+            return __generator(this, function (_a) {
+                trackingCode = uuid_1.v4();
+                console.log('ERROR INSIDE HANDLER', error);
+                responseError = this.getGenericErrorResponse(error, trackingCode);
+                logger_1.Logger.child({ trackingCode: trackingCode }).error(responseError);
+                res.status(500).json(responseError);
+                return [2 /*return*/];
+            });
+        });
+    };
     ErrorHandler.prototype.containsName = function (error) {
         return !!error.name;
     };
@@ -154,8 +178,20 @@ var ErrorHandler = /** @class */ (function () {
         };
         return errorResponse;
     };
+    ErrorHandler.prototype.getGenericErrorResponse = function (error, trackingCode) {
+        var errorResponse = {
+            type: ErrorHandler.GENERIC_ERROR,
+            details: {
+                message: 'Generic error',
+                detail: error.message
+            },
+            trackingCode: trackingCode,
+        };
+        return errorResponse;
+    };
     ErrorHandler.MONGO_ERROR = 'MongoError';
     ErrorHandler.VALIDATION_ERROR = 'ValidationError';
+    ErrorHandler.GENERIC_ERROR = 'GenericError';
     return ErrorHandler;
 }());
 exports.handler = new ErrorHandler();

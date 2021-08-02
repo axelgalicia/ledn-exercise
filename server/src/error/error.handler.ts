@@ -18,6 +18,7 @@ class ErrorHandler {
 
     public static readonly MONGO_ERROR = 'MongoError';
     public static readonly VALIDATION_ERROR = 'ValidationError';
+    public static readonly GENERIC_ERROR = 'GenericError';
 
 
     /**
@@ -33,7 +34,7 @@ class ErrorHandler {
     public async handleError(error: any, req: Request, res: Response, next: NextFunction): Promise<void> {
         await this.handleMongooseError(error, res, next);
         await this.handleValidationError(error, res, next);
-        Logger.error(error);
+        await this.handleOtherError(error, res, next);
     };
 
     /**
@@ -78,6 +79,23 @@ class ErrorHandler {
         }
     }
 
+    /**
+     * 
+     * Handles all errors not handled from others handlers
+     * 
+     * @param error The Error object
+     * @param res Http Response
+     * @param next Next Function Callback
+     * 
+     */
+    private async handleOtherError(error: any, res: Response, next: NextFunction): Promise<void> {
+        const trackingCode = uuidv4();
+        console.log('ERROR INSIDE HANDLER', error);
+        const responseError = this.getGenericErrorResponse(error, trackingCode);
+        Logger.child({ trackingCode: trackingCode }).error(responseError);
+        res.status(500).json(responseError);
+    }
+
 
     private containsName(error: any): boolean {
         return !!error.name;
@@ -106,6 +124,19 @@ class ErrorHandler {
             type: ErrorHandler.MONGO_ERROR,
             details: {
                 message: 'Error in MongoDB',
+                detail: error.message
+            },
+            trackingCode,
+        }
+        return errorResponse;
+    }
+
+
+    private getGenericErrorResponse(error: any, trackingCode: string): IErrorResponse {
+        const errorResponse: IErrorResponse = {
+            type: ErrorHandler.GENERIC_ERROR,
+            details: {
+                message: 'Generic error',
                 detail: error.message
             },
             trackingCode,

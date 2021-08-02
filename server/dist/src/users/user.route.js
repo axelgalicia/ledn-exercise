@@ -72,12 +72,12 @@ router.get('/api/users', function (req, res, next) { return __awaiter(void 0, vo
                 return [4 /*yield*/, user_controller_1.default.findAllUsers(req.query)];
             case 2:
                 users = _a.sent();
-                return [3 /*break*/, 4];
+                return [2 /*return*/, res.send(users)];
             case 3:
                 error_1 = _a.sent();
                 next(error_1);
                 return [3 /*break*/, 4];
-            case 4: return [2 /*return*/, res.send(users)];
+            case 4: return [2 /*return*/];
         }
     });
 }); });

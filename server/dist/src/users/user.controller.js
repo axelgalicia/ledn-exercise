@@ -46,6 +46,7 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 var user_model_1 = require("./user.model");
 var joi_1 = __importDefault(require("joi"));
+var user_filter_1 = __importDefault(require("./user.filter"));
 var FIRST_NAME_INPUT_FIELD = "First Name";
 var LAST_NAME_INPUT_FIELD = "Last Name";
 var COUNTRY_INPUT_FIELD = "Country";
@@ -87,32 +88,39 @@ var buildFromInput = function (userInput, userInputSchema) {
  * @returns {UserDoc[]} Returs the array of UserDocs matching the query
  */
 var findAllUsers = function (filters) { return __awaiter(void 0, void 0, void 0, function () {
-    var matchedUsers, query, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var response, query, records, _a, error_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                matchedUsers = [];
-                _a.label = 1;
+                response = { totalRecords: 0, totalMatched: 0, records: [] };
+                _b.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                console.log('sortBy: ', filters.sortBy);
+                _b.trys.push([1, 4, , 5]);
                 query = user_model_1.User.find();
                 // Like Filters
-                filterLikeBy('firstName', filters, query);
-                filterLikeBy('lastName', filters, query);
+                user_filter_1.default.filterLikeBy('firstName', filters, query);
+                user_filter_1.default.filterLikeBy('lastName', filters, query);
                 // Exact Match
-                filterByEquals('countryCode', filters, query);
-                filterByEquals('mfa', filters, query);
+                user_filter_1.default.filterByEquals('countryCode', filters, query);
+                user_filter_1.default.filterByEquals('mfa', filters, query);
                 // Sorting
-                sortBy(filters.sortBy, query);
+                user_filter_1.default.sortBy(filters.sortBy, query);
+                // Pagination
+                user_filter_1.default.addPagination(filters, query);
                 return [4 /*yield*/, query.exec()];
             case 2:
-                matchedUsers = _a.sent();
-                return [3 /*break*/, 4];
+                records = _b.sent();
+                _a = response;
+                return [4 /*yield*/, user_model_1.User.count()];
             case 3:
-                error_1 = _a.sent();
+                _a.totalRecords = _b.sent();
+                response.totalMatched = records.length;
+                response.records = records;
+                return [3 /*break*/, 5];
+            case 4:
+                error_1 = _b.sent();
                 throw error_1;
-            case 4: return [2 /*return*/, matchedUsers];
+            case 5: return [2 /*return*/, response];
         }
     });
 }); };
@@ -198,49 +206,4 @@ var deleteAllUsers = function () { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); };
-var filterByEquals = function (fieldName, filters, query) {
-    if (isFilterPresent(fieldName, filters)) {
-        query.where(fieldName).equals(filters[fieldName]);
-    }
-};
-var filterLikeBy = function (fieldName, filters, query) {
-    if (isFilterPresent(fieldName, filters)) {
-        query.where(fieldName, { $regex: filters[fieldName], $options: 'i' });
-    }
-};
-var sortBy = function (sortByFields, query) {
-    if (!!sortByFields) {
-        validateSorting(sortByFields);
-        var sortByArray = convertToSortByArray(sortByFields);
-        querySort(sortByArray, query);
-    }
-};
-var validateSorting = function (sortByFields) {
-    if (!sortByFields)
-        return;
-    Object.values(sortByFields).map(function (orderType) {
-        validateOrderType(orderType);
-    });
-};
-var convertToSortByArray = function (sortByFields) {
-    var sortByArray = [];
-    if (!!sortByFields.amt) {
-        sortByArray.push(['amt', sortByFields.amt]);
-    }
-    if (!!sortByFields.createdDate) {
-        sortByArray.push(['createdDate', sortByFields.createdDate]);
-    }
-    return sortByArray;
-};
-var validateOrderType = function (orderType) {
-    if (!orderType || (orderType !== 'asc' && orderType !== 'desc')) {
-        throw new Error('Invalid sorting type, allowed [asc, desc]');
-    }
-};
-var isFilterPresent = function (fieldName, filters) {
-    return !!filters[fieldName];
-};
-var querySort = function (sortByArray, query) {
-    query.sort(sortByArray);
-};
 exports.default = { createUser: createUser, insertBulkUsers: insertBulkUsers, deleteAllUsers: deleteAllUsers, findAllUsers: findAllUsers };

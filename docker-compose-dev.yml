@@ -59,16 +59,16 @@ services:
             - mongodb_network
 
     # Ledn Client
-    ledn-client:
-        container_name: ledn-client
-        depends_on:
-            - ledn-api
-        restart: always
-        build:
-            context: ./client
-            dockerfile: .
-        ports:
-            - 4000:80
+    # ledn-client:
+    #     container_name: ledn-client
+    #     depends_on:
+    #         - ledn-api
+    #     restart: always
+    #     build:
+    #         context: ./client
+    #         dockerfile: .
+    #     ports:
+    #         - 4000:80
         
   
 volumes:

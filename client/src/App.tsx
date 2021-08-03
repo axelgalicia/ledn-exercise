@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'semantic-ui-css/semantic.min.css'
-import { Container, Header, Divider, Segment, Icon, List } from 'semantic-ui-react';
+import { Container, Header, Divider, Segment, Icon, List, Dimmer, Loader, Image, Pagination } from 'semantic-ui-react';
 
 
 function App() {
@@ -60,8 +60,8 @@ function App() {
 
         </Segment>
 
-        <Segment>
-          <Header as='h3'>Searching fields</Header>
+        <Segment color="green">
+          <Header as='h3' color="green">Searching fields</Header>
           <Divider section />
 
           <Header as='h3'>Filtering</Header>
@@ -69,6 +69,26 @@ function App() {
 
           <Header as='h3'>Sorting</Header>
           <Divider section />
+        </Segment>
+
+
+        <Segment color="blue">
+          <Header as='h3' color='blue'>Results</Header>
+          <Divider section />
+
+          <Segment>
+            <Dimmer active inverted>
+              <Loader size='large'>Loading</Loader>
+            </Dimmer>
+
+            <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
+          </Segment>
+
+          
+          <Container textAlign="center">
+            <Pagination defaultActivePage={5} totalPages={5} />
+          </Container>
+
         </Segment>
       </Container>
 

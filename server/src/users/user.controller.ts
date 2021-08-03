@@ -6,7 +6,9 @@
 
 import { UserDoc, User } from "./user.model";
 import Joi from 'joi';
+import fs from 'fs';
 import Filter, { IUserQueryFilters } from "./user.filter";
+import jsonFile from 'jsonfile';
 
 
 const FIRST_NAME_INPUT_FIELD = "First Name";
@@ -185,4 +187,24 @@ const deleteAllUsers = async (): Promise<void> => {
 }
 
 
-export default { createUser, insertBulkUsers, deleteAllUsers, findAllUsers }
+/**
+ * Tries to load the data from accounts.json contained on /opt/data
+ * 
+ * -- TESTING PURPOSES --
+ * 
+ */
+const loadData = async (): Promise<any> => {
+    try {
+        return jsonFile.readFile('/opt/data/accounts.json')
+            .then(async data => {
+                return await insertBulkUsers(data);
+            })
+            .catch(error => { throw error; });
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+export default { createUser, insertBulkUsers, deleteAllUsers, findAllUsers, loadData }

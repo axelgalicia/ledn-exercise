@@ -47,6 +47,7 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 var user_model_1 = require("./user.model");
 var joi_1 = __importDefault(require("joi"));
+var fs_1 = __importDefault(require("fs"));
 var user_filter_1 = __importDefault(require("./user.filter"));
 var FIRST_NAME_INPUT_FIELD = "First Name";
 var LAST_NAME_INPUT_FIELD = "Last Name";
@@ -218,4 +219,28 @@ var deleteAllUsers = function () { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); };
-exports.default = { createUser: createUser, insertBulkUsers: insertBulkUsers, deleteAllUsers: deleteAllUsers, findAllUsers: findAllUsers };
+/**
+ * Tries to load the data from accounts.json contained on /opt/data
+ *
+ * -- TESTING PURPOSES --
+ *
+ */
+var loadData = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var data, inserted, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                data = fs_1.default.readFileSync('accounts.json', 'utf8');
+                return [4 /*yield*/, insertBulkUsers(JSON.parse(data))];
+            case 1:
+                inserted = _a.sent();
+                return [2 /*return*/, inserted];
+            case 2:
+                error_4 = _a.sent();
+                throw error_4;
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.default = { createUser: createUser, insertBulkUsers: insertBulkUsers, deleteAllUsers: deleteAllUsers, findAllUsers: findAllUsers, loadData: loadData };

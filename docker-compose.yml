@@ -52,6 +52,8 @@ services:
             dockerfile: .
         ports:
             - 3000:3000
+        volumes:
+            - ./data/:/opt/data
         command: ["pm2-runtime", "start", "process.json", "--only", "ledn_server_prod", "--env","production"]
         networks:
             - mongodb_network

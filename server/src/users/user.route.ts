@@ -5,7 +5,6 @@
  */
 
 import express, { NextFunction, Request, Response } from 'express';
-import { Logger } from '../logger/logger';
 import UserController from './user.controller';
 import { UserDoc } from './user.model';
 
@@ -103,5 +102,34 @@ router.delete('/api/users', [], async (req: Request, res: Response, next: NextFu
         next(error);
     }
 });
+
+
+/**
+ * 
+ * Starts loading the data contained in /opt/data
+ * 
+ * -- Testing purposes --
+ * 
+ * GET /api/users/autoload
+ * 
+ * @param req Http Request
+ * @param res Http Response
+ * @param next Next Function
+ * @returns {UserDoc[]} Returns the list of all UserDoc[]
+ * 
+ */
+ router.get('/api/users/autoload', async (req: Request, res: Response, next: NextFunction) => {
+
+    let inserted = null;
+    try {
+        inserted = await UserController.loadData();
+        return res.send(inserted);
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+
 
 export { router as userRouter }

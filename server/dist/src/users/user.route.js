@@ -172,3 +172,38 @@ router.delete('/api/users', [], function (req, res, next) { return __awaiter(voi
         }
     });
 }); });
+/**
+ *
+ * Starts loading the data contained in /opt/data
+ *
+ * -- Testing purposes --
+ *
+ * GET /api/users/autoload
+ *
+ * @param req Http Request
+ * @param res Http Response
+ * @param next Next Function
+ * @returns {UserDoc[]} Returns the list of all UserDoc[]
+ *
+ */
+router.get('/api/users/autoload', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var inserted, error_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                inserted = null;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, user_controller_1.default.loadData()];
+            case 2:
+                inserted = _a.sent();
+                return [2 /*return*/, res.send(inserted)];
+            case 3:
+                error_5 = _a.sent();
+                next(error_5);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });

@@ -37,6 +37,10 @@ interface IUserListResponse {
     records: UserDoc[];
 }
 
+interface IUserStatistics {
+    activeUsers: number;
+}
+
 const userInputSchema = Joi.object({
     [FIRST_NAME_INPUT_FIELD]: Joi.string().required(),
     [LAST_NAME_INPUT_FIELD]: Joi.string().required(),
@@ -70,13 +74,34 @@ const buildFromInput = (userInput: IUserInput, userInputSchema: Joi.Schema): Use
     return new User({ firstName, lastName, countryCode, email, dob, mfa, amt, createdDate, referredBy });
 }
 
+/**
+ * Queries User collection statistics
+ * 
+ * @returns {IUserStatistics} Returns the User collection statistics
+ */
+const findUserStatisctics = async (): Promise<IUserStatistics> => {
+
+    let statistics: IUserStatistics = {
+        activeUsers: 0
+    };
+
+    try {
+        statistics.activeUsers = await User.count();
+    } catch (error) {
+        throw error;
+    }
+
+    return statistics;
+}
+
+
 
 /**
  * Queries User collection
  * 
  * 
  * @param {IUserInput} userInput IUserInput object to be inserted into the db
- * @returns {UserDoc[]} Returs the array of UserDocs matching the query
+ * @returns {UserDoc[]} Returns the array of UserDocs matching the query
  */
 const findAllUsers = async (filters: IUserQueryFilters): Promise<IUserListResponse> => {
 
@@ -103,7 +128,7 @@ const findAllUsers = async (filters: IUserQueryFilters): Promise<IUserListRespon
         Filter.sortBy(filters.sortBy, query);
 
         // Used to know total of pages
-        const totalBeforePagination: number = await (await query.exec()).length;
+        const totalBeforePagination: number = (await query.exec()).length;
 
         // Pagination
         Filter.addPagination(filters, query);
@@ -207,4 +232,11 @@ const loadData = async (): Promise<any> => {
 }
 
 
-export default { createUser, insertBulkUsers, deleteAllUsers, findAllUsers, loadData }
+export default {
+    findUserStatisctics,
+    createUser,
+    insertBulkUsers,
+    deleteAllUsers,
+    findAllUsers,
+    loadData
+}

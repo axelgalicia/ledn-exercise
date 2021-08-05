@@ -8,6 +8,7 @@
  */
 
 import express, { Application, Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import { json } from 'body-parser';
 import { userRouter } from './users/user.route';
 import { ConnectToMongoDB } from './mongodb/connect';
@@ -19,7 +20,7 @@ import { appConfig } from './app.config';
 const app: Application = express();
 
 
-
+app.use(cors);
 app.use(json());
 app.use(userRouter);
 

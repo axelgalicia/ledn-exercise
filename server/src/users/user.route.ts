@@ -14,6 +14,30 @@ const router = express.Router();
 
 /**
  * 
+ * Gets statistics for all users
+ * 
+ * GET /api/users/statistics
+ * 
+ * @param req Http Request
+ * @param res Http Response
+ * @param next Next Function
+ * @returns {IUserStatistics} Returns User collection statistics
+ * 
+ */
+ router.get('/api/users/statistics', async (req: Request, res: Response, next: NextFunction) => {
+
+    let statistics = null;
+    try {
+        statistics = await UserController.findUserStatisctics();
+        return res.send(statistics);
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+/**
+ * 
  * Gets all Users with filter options
  * 
  * GET /api/users

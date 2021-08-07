@@ -6,7 +6,6 @@
 
 import { UserDoc, User } from "./user.model";
 import Joi from 'joi';
-import fs from 'fs';
 import Filter, { IUserQueryFilters } from "./user.filter";
 import jsonFile from 'jsonfile';
 
@@ -86,7 +85,7 @@ const findUserStatisctics = async (): Promise<IUserStatistics> => {
     };
 
     try {
-        statistics.activeUsers = await User.count();
+        statistics.activeUsers = await User.countDocuments();
     } catch (error) {
         throw error;
     }

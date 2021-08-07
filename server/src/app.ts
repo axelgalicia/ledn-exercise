@@ -20,7 +20,7 @@ import { appConfig } from './app.config';
 const app: Application = express();
 
 
-app.use(cors);
+app.use(cors());
 app.use(json());
 app.use(userRouter);
 

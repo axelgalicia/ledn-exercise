@@ -115,7 +115,7 @@ const addPagination = (filters: any, query: any): void => {
 
 const getPageSize = (filters: any): number => {
     return !!filters.pageSize ? parseInt(filters.pageSize, 10) :
-        parseInt(appConfig.defaultPageSize, 10);
+        parseInt(appConfig.defaultPageSize || '20', 10);
 }
 
 const getPageNumber = (filters: any): number => {

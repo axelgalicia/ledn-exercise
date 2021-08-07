@@ -18,7 +18,7 @@ export const fetchDeleteAllUsers = async (): Promise<void> => {
     throw new Error('Could not delete all users');
 }
 
-export const loadFile = async (): Promise<any> => {
+export const fetchLoadFile = async (): Promise<any> => {
     const res = await fetch(`${appConfig.apiUrl}/users/autoload`);
     if (res.ok) {
         return res.json();

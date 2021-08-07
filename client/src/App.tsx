@@ -6,8 +6,6 @@ const queryClient = new QueryClient();
 
 function App() {
 
-  console.log('REACT_APP_API_PORT:', process.env.REACT_APP_API_PORT);
-
   return (
     <QueryClientProvider client={queryClient}>
       <UsersDashboard />

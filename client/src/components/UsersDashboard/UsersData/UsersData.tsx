@@ -1,11 +1,12 @@
 import { useMutation, UseMutationResult, useQuery, UseQueryResult } from "react-query";
-import { Segment, Header, Divider, Grid, Button, Statistic } from "semantic-ui-react";
+import { Grid, Button, Statistic } from "semantic-ui-react";
 import { IUserStatistics } from "./interfaces/IUserStatistics";
 import { fetchDeleteAllUsers, fetchLoadFile, fetchUserStatistics } from "./services/UserServices";
 import styled from 'styled-components';
 import ErrorMessage from "../../ErrorMessage";
 import { useEffect, useState } from "react";
 import SuccessMessage from "../../SuccessMessage";
+import CustomSection from "../../CustomSection";
 
 const SpacedButton = styled(Button)`
 &&& {
@@ -59,24 +60,23 @@ const UsersData = () => {
     }
 
     return (
-        <Segment color='blue'>
-            <Header as='h3' color='blue'>User's Data</Header>
-            <Divider section />
+        <CustomSection title="User's Data" color='blue'>
             <Grid columns={3} stackable textAlign='center' verticalAlign='middle'>
                 <Grid.Column>
-                    <SpacedButton color="green" onClick={() => loadFile(mutationLoadFile)}>LOAD FILE          (data/accounts.json)</SpacedButton>
+                    <SpacedButton disabled={shouldDisableLoad(queryStatistics)} color="green" onClick={() => loadFile(mutationLoadFile)}>LOAD FILE          (data/accounts.json)</SpacedButton>
                 </Grid.Column>
                 <Grid.Column>
                     <Button color="red" disabled={shouldDisableDelete(queryStatistics)}
                         onClick={() => deleteAllUsers(mutationDeleteAllUsers)}>DELETE ALL USERS</Button>
                 </Grid.Column>
                 <Grid.Column>
-                    <Statistic label='Active Users' value={getActiveUsers(queryStatistics)} size='large' />
+                    <Statistic label='LOADED UNIQUE USERS' value={getActiveUsers(queryStatistics)} size='large' />
                 </Grid.Column>
             </Grid>
             <ErrorMessage message={errorMessage} visible={showError}></ErrorMessage>
             <SuccessMessage message={successMessage} visible={showSucess}></SuccessMessage>
-        </Segment>
+        </CustomSection>
+
     )
 
 
@@ -86,18 +86,20 @@ const shouldDisableDelete = ({ isFetching, isSuccess, data, isError }: UseQueryR
     return isError || isFetching || (isSuccess && data?.activeUsers === 0);
 }
 
+const shouldDisableLoad = ({ isFetching, isLoading }: UseQueryResult<IUserStatistics, Error>) => {
+    return isLoading || isFetching;
+}
+
 const getActiveUsers = ({ isSuccess, data, isFetching }: UseQueryResult<IUserStatistics, Error>) => {
     return isFetching ? 'Loading..' : isSuccess ? data?.activeUsers : 'No Data';
 }
 
 
 const loadFile = (mutationLoadFile: UseMutationResult<void, Error>): void => {
-    console.log('Loading File');
     mutationLoadFile.mutate({}, {});
 };
 
 const deleteAllUsers = (mutationDeleteAllUsers: UseMutationResult<void, Error>): void => {
-    console.log('Delete Users');
     mutationDeleteAllUsers.mutate({}, {});
 
 };

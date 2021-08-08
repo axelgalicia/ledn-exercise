@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DropdownItemProps, Form, Grid, Input, InputOnChangeData, Label } from "semantic-ui-react";
+import { DropdownItemProps, DropdownProps, Form, Grid, Input, InputOnChangeData, Label } from "semantic-ui-react";
 import CustomSection from "../../CustomSection";
 import Subsection from "../../Subsection";
 import { SearchFilter } from "../types";
@@ -45,11 +45,23 @@ const SearchingFields = () => {
         console.log(filter);
     }
 
-    const handleChange = (e: any, data: InputOnChangeData) => {
+    const updateFilter = (fieldName: string, value: any): void => {
         let newFilter = { ...filter };
-        newFilter[data.name] = data.value ? data.value : undefined;
+        newFilter[fieldName] = value ? value : undefined;
         setFilter(newFilter);
         console.log(newFilter);
+    }
+
+    const handleChange = (e: React.SyntheticEvent<HTMLElement, Event>, data: InputOnChangeData) => {
+        updateFilter(data.name, data.value);
+    }
+
+    const onCountryCodeFilterSelected = (e: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps): void => {
+        updateFilter('countryCode', data.value);
+    }
+
+    const onMFAFilterSelected = (e: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps): void => {
+        updateFilter('mfa', data.value);
     }
 
     return (
@@ -73,9 +85,11 @@ const SearchingFields = () => {
                         <Form.Dropdown
                             search
                             clearable
+                            selection
                             label='Country Code'
                             options={countryCodes()}
                             placeholder='Country Code'
+                            onChange={onCountryCodeFilterSelected}
                         />
                         <Form.Dropdown
                             search
@@ -84,6 +98,7 @@ const SearchingFields = () => {
                             label='MFA Type'
                             options={MFATypes}
                             placeholder='MFA Type'
+                            onChange={onMFAFilterSelected}
                         />
                     </Form.Group>
                 </Form>

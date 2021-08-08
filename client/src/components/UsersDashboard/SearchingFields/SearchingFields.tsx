@@ -1,8 +1,34 @@
 import { useState } from "react";
-import { Form, Grid, InputOnChangeData } from "semantic-ui-react";
+import { DropdownItemProps, Form, Grid, Input, InputOnChangeData, Label } from "semantic-ui-react";
 import CustomSection from "../../CustomSection";
 import Subsection from "../../Subsection";
 import { SearchFilter } from "../types";
+import countries, { Country } from 'country-code-lookup';
+
+
+const MFATypes: DropdownItemProps[] = [
+    { key: 'sms', text: 'SMS', value: 'SMA' },
+    { key: 'topt', text: 'TOTP', value: 'TOTP' },
+    { key: 'null', text: 'NULL', value: 'null' },
+];
+
+const countryCodes = (): any[] => {
+    const countryCodesMap: any = [];
+
+    countries.countries.map(country => {
+        const newCountry = {
+            key: country.iso2,
+            text: country.country,
+            value: country.iso2,
+            flag: country.iso2.toLowerCase(),
+        };
+        countryCodesMap.push(newCountry);
+    })
+
+    return countryCodesMap;
+}
+
+
 
 
 const SearchingFields = () => {
@@ -20,7 +46,7 @@ const SearchingFields = () => {
     }
 
     const handleChange = (e: any, data: InputOnChangeData) => {
-        let newFilter = {...filter};
+        let newFilter = { ...filter };
         newFilter[data.name] = data.value ? data.value : undefined;
         setFilter(newFilter);
         console.log(newFilter);
@@ -29,31 +55,44 @@ const SearchingFields = () => {
     return (
         <CustomSection title='Searching Fields' color='blue'>
             <Subsection title='Filtering'>
-                <Grid columns={4}>
-                    <Form onSubmit={() => handleSubmit()}>
-                        <Form.Group>
-                            <Form.Input
-                                placeholder='First Name'
-                                name='firstName'
-                                onChange={handleChange}
-                            />
-                            <Form.Input
-                                placeholder='Last Name'
-                                name='lastName'
-                                onChange={handleChange}
-                            />
-                            <Form.Button content='Submit' />
-                        </Form.Group>
-                    </Form>
-                    <strong>onChange:</strong>
-                    <pre>{JSON.stringify(filter, null, 2)}</pre>
-                    <strong>onSubmit:</strong>
-                    <pre>{JSON.stringify(filter, null, 2)}</pre>
-                </Grid>
+                <Form>
+                    <Form.Group widths='equal'>
+                        <Form.Input
+                            label='First Name'
+                            placeholder='First Name'
+                            name='firstName'
+                            onChange={handleChange}>
+                        </Form.Input>
 
-            </Subsection>
+                        <Form.Input
+                            label='Last Name'
+                            placeholder='Last Name'
+                            name='lastName'
+                            onChange={handleChange}
+                        />
+                        <Form.Dropdown
+                            search
+                            clearable
+                            label='Country Code'
+                            options={countryCodes()}
+                            placeholder='Country Code'
+                        />
+                        <Form.Dropdown
+                            search
+                            clearable
+                            selection
+                            label='MFA Type'
+                            options={MFATypes}
+                            placeholder='MFA Type'
+                        />
+                    </Form.Group>
+                </Form>
+
+
+            </Subsection >
+
             <Subsection title='Sorting'></Subsection>
-        </CustomSection>
+        </CustomSection >
     )
 }
 

@@ -4,7 +4,7 @@ import { SemanticCOLORS } from "semantic-ui-react/dist/commonjs/generic"
 type CustomSectionProps = {
     color?: SemanticCOLORS;
     title: string;
-    children?: React.ReactNode[]
+    children?: React.ReactNode[] | React.ReactNode;
 }
 
 const CustomSection = ({ title, color, children }: CustomSectionProps) => {

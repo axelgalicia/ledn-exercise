@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
+import Moment from 'react-moment';
+import { CSVLink } from "react-csv";
 import _ from 'lodash'
-import { Segment, Table, Dimmer, Loader, Container, Pagination, Image, PaginationProps } from "semantic-ui-react"
+import { Segment, Table, Dimmer, Loader, Container, Pagination, Image, PaginationProps, Button } from "semantic-ui-react"
 import CustomSection from "../../CustomSection"
 import userSearchStore from "../stores/useUserSearchStore";
 import {
@@ -20,7 +22,7 @@ import {
 import { SortingType, UsersResults } from "./types"
 import { useQuery, UseQueryResult } from "react-query"
 import { fetchAllUsers } from "./services"
-
+import { mapUsers } from "./utils";
 
 
 const ResultsTable = () => {
@@ -28,7 +30,7 @@ const ResultsTable = () => {
     const [queryEnabled, setQueryEnabled] = useState(true);
     const queryFetchAllUsers: UseQueryResult<UsersResults, Error> = useQuery('fetchAllUsers', async () => fetchAllUsers(), {
         enabled: queryEnabled, onSuccess: (data) => {
-            dispatch({ type: UPDATE_DATA_ACTION, data: data.records });
+            dispatch({ type: UPDATE_DATA_ACTION, data: mapUsers(data.records) });
         }
     });
 
@@ -40,12 +42,13 @@ const ResultsTable = () => {
     const { column, data, direction } = state;
 
 
-    const a = userSearchStore.subscribe((n, o) => {
+    userSearchStore.subscribe((n, o) => {
         queryFetchAllUsers.refetch();
     });
 
     const handlePageChange = (e: any, data: PaginationProps): void => {
         console.log('Page selection:', data.activePage);
+        queryFetchAllUsers.refetch();
     }
 
     const handleSortByColum = (columnName: string): void => {
@@ -63,6 +66,7 @@ const ResultsTable = () => {
 
     return (
         <CustomSection title='Results' color='blue' showLabel={true} labelValue={getUserResults(queryFetchAllUsers).totalRecords + ''}>
+            {data.length > 0 ? <CSVLink data={data} filename={`ledn_results.csv`}><Button color='blue' size='small'>DOWNLOAD CSV</Button></CSVLink> : <></>}
 
             <Table sortable celled compact='very' collapsing size='small' stackable>
                 <Table.Header>
@@ -148,10 +152,11 @@ const ResultsTable = () => {
                                     <Table.Cell>{lastName}</Table.Cell>
                                     <Table.Cell>{countryCode}</Table.Cell>
                                     <Table.Cell>{email}</Table.Cell>
-                                    <Table.Cell>{dob}</Table.Cell>
+                                    <Table.Cell><Moment format="MMM DD, YYYY">{dob}</Moment></Table.Cell>
                                     <Table.Cell>{mfa}</Table.Cell>
                                     <Table.Cell>{amt}</Table.Cell>
-                                    <Table.Cell>{createdDate}</Table.Cell>
+                                    <Table.Cell>
+                                        <Moment format="MMM DD, YYYY HH:mm:ss">{createdDate}</Moment></Table.Cell>
                                     <Table.Cell>{referredBy}</Table.Cell>
                                 </Table.Row>
                             ))
@@ -226,6 +231,8 @@ const sortingReducer = (state: any, action: any): any => {
             throw new Error()
     }
 }
+
+
 
 
 

@@ -11,8 +11,11 @@
     "@types/react": "^17.0.15",
     "@types/react-dom": "^17.0.9",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "react": "^17.0.2",
+    "react-csv": "^2.0.3",
     "react-dom": "^17.0.2",
+    "react-moment": "^1.1.1",
     "react-query": "^3.19.1",
     "react-scripts": "4.0.3",
     "semantic-ui-css": "^2.4.1",
@@ -48,6 +51,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.172",
+    "@types/react-csv": "^1.1.2",
     "@types/styled-components": "^5.1.11"
   }
 }

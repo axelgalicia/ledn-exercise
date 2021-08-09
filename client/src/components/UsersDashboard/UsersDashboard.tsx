@@ -3,7 +3,7 @@ import { Container, Divider, Grid } from 'semantic-ui-react';
 import UsersData from './UsersData/UsersData';
 import DeveloperInfo from './DeveloperInfo';
 import MainHeader from '../MainHeader';
-import ResultsTable from './ResultsTable/ResultsTable';
+import ResultsTable from './ResultsTable';
 import SearchingFields from './SearchingFields';
 
 
@@ -29,7 +29,7 @@ const UsersDashboard = () => {
                                 email='axelgalicia@gmail.com'
                                 websiteLink='https://axel.today'
                                 linkLabel='axel.today'
-                                city='Toronto ON'></DeveloperInfo>
+                                city='Toronto ON' />
                         </Container>
 
                         <Divider />

@@ -1,5 +1,5 @@
-import { IUserStatistics } from "../interfaces/IUserStatistics";
-import { appConfig } from "../../../../configs/AppConfig";
+import { IUserStatistics } from "./types";
+import { appConfig } from "../../../configs/AppConfig";
 
 export const fetchUserStatistics = async (): Promise<IUserStatistics> => {
     const res = await fetch(`${appConfig.apiUrl}/users/statistics`);

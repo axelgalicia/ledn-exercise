@@ -1,54 +1,226 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import _ from 'lodash'
-import { Segment, Table, Dimmer, Loader, Container, Pagination, Image } from "semantic-ui-react"
+import { Segment, Table, Dimmer, Loader, Container, Pagination, Image, PaginationProps } from "semantic-ui-react"
 import CustomSection from "../../CustomSection"
+import userSearchStore from "../stores/useUserSearchStore";
+import {
+    AMT_FIELD,
+    ASCENDING,
+    CHANGE_SORT_ACTION,
+    COUNTRY_CODE_FIELD,
+    CREATED_DATA_FIELD,
+    DATE_OF_BIRTH_FIELD,
+    DESCENDING, EMAIL_FIELD,
+    FIRST_NAME_FIELD,
+    LAST_NAME_FIELD,
+    MFA_FIELD,
+    REFERRED_BY_FIELD,
+    UPDATE_DATA_ACTION
+} from "./constants"
+import { SortingType, UsersResults } from "./types"
+import { useQuery, UseQueryResult } from "react-query"
+import { fetchAllUsers } from "./services"
 
-type ResultsTableProps = {
 
+
+const ResultsTable = () => {
+
+    const [queryEnabled, setQueryEnabled] = useState(true);
+    const queryFetchAllUsers: UseQueryResult<UsersResults, Error> = useQuery('fetchAllUsers', async () => fetchAllUsers(), {
+        enabled: queryEnabled, onSuccess: (data) => {
+            dispatch({ type: UPDATE_DATA_ACTION, data: data.records });
+        }
+    });
+
+    const [state, dispatch] = React.useReducer(sortingReducer, {
+        column: null,
+        data: [],
+        direction: null,
+    })
+    const { column, data, direction } = state;
+
+
+    const a = userSearchStore.subscribe((n, o) => {
+        queryFetchAllUsers.refetch();
+    });
+
+    const handlePageChange = (e: any, data: PaginationProps): void => {
+        console.log('Page selection:', data.activePage);
+    }
+
+    const handleSortByColum = (columnName: string): void => {
+        dispatch({ type: CHANGE_SORT_ACTION, column: columnName });
+    }
+
+    const sortedBy = (columnName: string): SortingType => {
+        return column === columnName ? direction : undefined;
+    }
+
+    useEffect(() => {
+        setQueryEnabled(false);
+    }, []);
+
+
+    return (
+        <CustomSection title='Results' color='blue' showLabel={true} labelValue={getUserResults(queryFetchAllUsers).totalRecords + ''}>
+
+            <Table sortable celled compact='very' collapsing size='small' stackable>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell
+                            sorted={sortedBy(FIRST_NAME_FIELD)}
+                            onClick={() => handleSortByColum(FIRST_NAME_FIELD)}
+                        >
+                            First Name
+                        </Table.HeaderCell>
+
+                        <Table.HeaderCell
+                            sorted={sortedBy(LAST_NAME_FIELD)}
+                            onClick={() => handleSortByColum(LAST_NAME_FIELD)}
+                        >
+                            Last Name
+                        </Table.HeaderCell>
+
+
+                        <Table.HeaderCell
+                            sorted={sortedBy(COUNTRY_CODE_FIELD)}
+                            onClick={() => handleSortByColum(COUNTRY_CODE_FIELD)}
+                        >
+                            Country Code
+                        </Table.HeaderCell>
+
+
+                        <Table.HeaderCell
+                            sorted={sortedBy(EMAIL_FIELD)}
+                            onClick={() => handleSortByColum(EMAIL_FIELD)}
+                        >
+                            Email
+                        </Table.HeaderCell>
+
+
+                        <Table.HeaderCell
+                            sorted={sortedBy(DATE_OF_BIRTH_FIELD)}
+                            onClick={() => handleSortByColum(DATE_OF_BIRTH_FIELD)}
+                        >
+                            Date of Birth
+                        </Table.HeaderCell>
+
+
+                        <Table.HeaderCell
+                            sorted={sortedBy(MFA_FIELD)}
+                            onClick={() => handleSortByColum(MFA_FIELD)}
+                        >
+                            MFA
+                        </Table.HeaderCell>
+
+
+                        <Table.HeaderCell
+                            sorted={sortedBy(AMT_FIELD)}
+                            onClick={() => handleSortByColum(AMT_FIELD)}
+                        >
+                            Amount
+                        </Table.HeaderCell>
+
+
+                        <Table.HeaderCell
+                            sorted={sortedBy(CREATED_DATA_FIELD)}
+                            onClick={() => handleSortByColum(CREATED_DATA_FIELD)}
+                        >
+                            Created Date
+                        </Table.HeaderCell>
+
+
+                        <Table.HeaderCell
+                            sorted={sortedBy(REFERRED_BY_FIELD)}
+                            onClick={() => handleSortByColum(REFERRED_BY_FIELD)}
+                        >
+                            Referred By
+                        </Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {
+
+                        !isLoading(queryFetchAllUsers) && queryFetchAllUsers.isSuccess ?
+                            data.map(({ firstName, lastName, countryCode, email, dob, mfa, amt, createdDate, referredBy }: any) => (
+                                <Table.Row key={email}>
+                                    <Table.Cell>{firstName}</Table.Cell>
+                                    <Table.Cell>{lastName}</Table.Cell>
+                                    <Table.Cell>{countryCode}</Table.Cell>
+                                    <Table.Cell>{email}</Table.Cell>
+                                    <Table.Cell>{dob}</Table.Cell>
+                                    <Table.Cell>{mfa}</Table.Cell>
+                                    <Table.Cell>{amt}</Table.Cell>
+                                    <Table.Cell>{createdDate}</Table.Cell>
+                                    <Table.Cell>{referredBy}</Table.Cell>
+                                </Table.Row>
+                            ))
+                            : <></>
+                    }
+                </Table.Body>
+            </Table>
+
+            {isLoading(queryFetchAllUsers) ?
+
+                <Segment>
+                    <Dimmer active inverted>
+                        <Loader size='large'>Loading</Loader>
+                    </Dimmer>
+                    <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
+                </Segment> : <></>}
+            <Container textAlign='center'>
+                {getUserResults(queryFetchAllUsers).pageCount ?
+                    <Pagination defaultActivePage={1} totalPages={getUserResults(queryFetchAllUsers).pageCount} onPageChange={(e, data) => handlePageChange(e, data)} />
+                    : <></>
+                }
+            </Container>
+        </CustomSection>
+
+    )
 }
 
+const isLoading = (queryFetchAllUsers: UseQueryResult<UsersResults, Error>): boolean => {
+    return queryFetchAllUsers.status === 'loading' || queryFetchAllUsers.isLoading || queryFetchAllUsers.isFetching;
+}
 
-const tableData = [
-    {
-        firstName: "Nova",
-        lastName: "Bruen",
-        countryCode: "BR",
-        email: "Jordi6@yahoo.com",
-        dob: "1972-07-21T04:18:44.159Z",
-        mfa: "null",
-        amt: 654974669,
-        createdDate: "2020-07-26T15:01:34.395Z",
-        referredBy: null
-    },
-    {
-        firstName: "Axel",
-        lastName: "Romeo",
-        countryCode: "MX",
-        email: "aaaxelmanoa@gmail.com",
-        dob: "1988-07-21T04:18:44.159Z",
-        mfa: "SMS",
-        amt: 999223,
-        createdDate: "20218-002-26T15:01:34.395Z",
-        referredBy: "Team@gmail.com"
-    },
-]
+const getUserResults = (q: UseQueryResult<UsersResults, Error>): UsersResults => {
 
-function exampleReducer(state: any, action: any) {
+    if (isLoading(q) || !q.isSuccess) return {} as UsersResults;
+    const { totalRecords, currentPage, pageCount, pageSize, records } = q.data as UsersResults;
+
+    return {
+        totalRecords: totalRecords ? totalRecords : 0,
+        currentPage: currentPage ? currentPage : 0,
+        pageCount: pageCount ? pageCount : 0,
+        pageSize: pageSize ? pageSize : 0,
+        records: records ? records : []
+    }
+}
+
+const sortingReducer = (state: any, action: any): any => {
     switch (action.type) {
-        case 'CHANGE_SORT':
+        case CHANGE_SORT_ACTION:
             if (state.column === action.column) {
                 return {
                     ...state,
                     data: state.data.slice().reverse(),
                     direction:
-                        state.direction === 'ascending' ? 'descending' : 'ascending',
+                        state.direction === ASCENDING ? DESCENDING : ASCENDING,
                 }
             }
 
             return {
                 column: action.column,
                 data: _.sortBy(state.data, [action.column]),
-                direction: 'ascending',
+                direction: ASCENDING,
+            }
+
+        case UPDATE_DATA_ACTION:
+
+            return {
+                ...state,
+                data: action.data,
+                direction: ASCENDING,
             }
         default:
             throw new Error()
@@ -56,137 +228,5 @@ function exampleReducer(state: any, action: any) {
 }
 
 
-
-const ResultsTable = ({}: ResultsTableProps) => {
-
-
-
-    const [state, dispatch] = React.useReducer(exampleReducer, {
-        column: null,
-        data: tableData,
-        direction: null,
-    })
-    const { column, data, direction } = state
-
-    return (
-        <CustomSection title='Results' color='blue'>
-
-            <Table sortable celled compact='very' collapsing size='small' stackable>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell
-                            sorted={column === 'firstName' ? direction : null}
-                            onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'firstName' })}
-                        >
-                            First Name
-                        </Table.HeaderCell>
-
-                        <Table.HeaderCell
-                            sorted={column === 'lastName' ? direction : null}
-                            onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'lastName' })}
-                        >
-                            Last Name
-                        </Table.HeaderCell>
-
-
-                        <Table.HeaderCell
-                            sorted={column === 'countryCode' ? direction : null}
-                            onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'countryCode' })}
-                        >
-                            Country Code
-                        </Table.HeaderCell>
-
-
-                        <Table.HeaderCell
-                            sorted={column === 'email' ? direction : null}
-                            onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'email' })}
-                        >
-                            Email
-                        </Table.HeaderCell>
-
-
-                        <Table.HeaderCell
-                            sorted={column === 'dob' ? direction : null}
-                            onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'dob' })}
-                        >
-                            Date of Birth
-                        </Table.HeaderCell>
-
-
-                        <Table.HeaderCell
-                            sorted={column === 'mfa' ? direction : null}
-                            onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'mfa' })}
-                        >
-                            MFA
-                        </Table.HeaderCell>
-
-
-                        <Table.HeaderCell
-                            sorted={column === 'amt' ? direction : null}
-                            onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'amt' })}
-                        >
-                            Amount
-                        </Table.HeaderCell>
-
-
-                        <Table.HeaderCell
-                            sorted={column === 'gender' ? direction : null}
-                            onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'createdDate' })}
-                        >
-                            CreatedDate
-                        </Table.HeaderCell>
-
-
-                        <Table.HeaderCell
-                            sorted={column === 'referredBy' ? direction : null}
-                            onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'referredBy' })}
-                        >
-                            Referred By
-                        </Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {data.map(({ firstName, lastName, countryCode, email, dob, mfa, amt, createdDate, referredBy }: any) => (
-                        <Table.Row key={email}>
-                            <Table.Cell>{firstName}</Table.Cell>
-                            <Table.Cell>{lastName}</Table.Cell>
-                            <Table.Cell>{countryCode}</Table.Cell>
-                            <Table.Cell>{email}</Table.Cell>
-                            <Table.Cell>{dob}</Table.Cell>
-                            <Table.Cell>{mfa}</Table.Cell>
-                            <Table.Cell>{amt}</Table.Cell>
-                            <Table.Cell>{createdDate}</Table.Cell>
-                            <Table.Cell>{referredBy}</Table.Cell>
-                        </Table.Row>
-                    ))}
-                </Table.Body>
-            </Table>
-
-
-
-
-
-            <Segment>
-                <Dimmer active inverted>
-                    <Loader size='large'>Loading</Loader>
-                </Dimmer>
-
-                <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
-            </Segment>
-
-
-            <Container textAlign='center'>
-                <Pagination defaultActivePage={1} totalPages={5} />
-            </Container>
-        </CustomSection>
-
-
-
-
-
-
-
-    )
-}
 
 export default ResultsTable;

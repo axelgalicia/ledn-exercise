@@ -1,7 +1,7 @@
 import { useMutation, UseMutationResult, useQuery, UseQueryResult } from "react-query";
 import { Grid, Button, Statistic } from "semantic-ui-react";
-import { IUserStatistics } from "./interfaces/IUserStatistics";
-import { fetchDeleteAllUsers, fetchLoadFile, fetchUserStatistics } from "./services/UserServices";
+import { IUserStatistics } from "./types";
+import { fetchDeleteAllUsers, fetchLoadFile, fetchUserStatistics } from "./services";
 import styled from 'styled-components';
 import ErrorMessage from "../../ErrorMessage";
 import { useEffect, useState } from "react";

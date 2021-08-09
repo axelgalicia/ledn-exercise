@@ -1,5 +1,5 @@
 
-import { Container, Header, Divider, Segment, Icon, List, Dimmer, Loader, Image, Pagination, Table, Grid, Button, Statistic } from 'semantic-ui-react';
+import { Container, Divider, Grid } from 'semantic-ui-react';
 import UsersData from './UsersData/UsersData';
 import DeveloperInfo from './DeveloperInfo';
 import MainHeader from '../MainHeader';
@@ -7,17 +7,13 @@ import ResultsTable from './ResultsTable/ResultsTable';
 import SearchingFields from './SearchingFields';
 
 
+
 const UsersDashboard = () => {
-
-
-
-
 
     return (
 
         <>
-            <Grid centered padded='vertically'/>
-
+            <Grid centered padded='vertically' />
             <Grid centered padded='horizontally'>
                 <Grid.Column width={10}>
                     <Container fluid>
@@ -46,7 +42,6 @@ const UsersDashboard = () => {
 
                 </Grid.Column>
             </Grid>
-
         </>
 
     );

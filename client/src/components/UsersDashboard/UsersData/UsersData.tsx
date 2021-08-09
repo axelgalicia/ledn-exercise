@@ -7,12 +7,14 @@ import ErrorMessage from "../../ErrorMessage";
 import { useEffect, useState } from "react";
 import SuccessMessage from "../../SuccessMessage";
 import CustomSection from "../../CustomSection";
+import userSearchStore from "../stores/useUserSearchStore";
 
 const SpacedButton = styled(Button)`
 &&& {
     white-space: pre;
 }
 `
+
 
 
 const UsersData = () => {
@@ -59,6 +61,10 @@ const UsersData = () => {
         return <span>Loading...</span>
     }
 
+    if (queryStatistics.isSuccess) {
+        updateActiveUsers(queryStatistics.data.activeUsers);
+    }
+
     return (
         <CustomSection title="User's Data" color='blue'>
             <Grid columns={3} stackable textAlign='center' verticalAlign='middle'>
@@ -91,7 +97,7 @@ const shouldDisableLoad = ({ isFetching, isLoading }: UseQueryResult<IUserStatis
 }
 
 const getActiveUsers = ({ isSuccess, data, isFetching }: UseQueryResult<IUserStatistics, Error>) => {
-    return isFetching ? 'Loading..' : isSuccess ? data?.activeUsers : 'No Data';
+    return isFetching ? 'Loading..' : isSuccess ? data?.activeUsers : '-';
 }
 
 
@@ -103,5 +109,12 @@ const deleteAllUsers = (mutationDeleteAllUsers: UseMutationResult<void, Error>):
     mutationDeleteAllUsers.mutate({}, {});
 
 };
+
+const updateActiveUsers = (activeUsers: number): void => {
+    const previousActiveUsers = userSearchStore.getState().statistics.activeUsers;
+    if (previousActiveUsers !== activeUsers) {
+        userSearchStore.setState({ statistics: { activeUsers: activeUsers } });
+    }
+}
 
 export default UsersData;

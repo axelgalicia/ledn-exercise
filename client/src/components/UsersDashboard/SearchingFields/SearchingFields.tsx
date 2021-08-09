@@ -1,33 +1,10 @@
 import { useState } from "react";
-import { DropdownItemProps, DropdownProps, Form, Grid, Input, InputOnChangeData, Label } from "semantic-ui-react";
+import { DropdownProps, Form, InputOnChangeData } from "semantic-ui-react";
+import { OrderType, SearchFilter, SortingMap } from "../types";
+import { countryCodes, MFA_TYPES, SORTING_TYPES } from "./constants";
+import userSearchStore from "../stores/useUserSearchStore";
+import CustomHeader from "../../CustomHeader";
 import CustomSection from "../../CustomSection";
-import Subsection from "../../Subsection";
-import { SearchFilter } from "../types";
-import countries, { Country } from 'country-code-lookup';
-
-
-const MFATypes: DropdownItemProps[] = [
-    { key: 'sms', text: 'SMS', value: 'SMA' },
-    { key: 'topt', text: 'TOTP', value: 'TOTP' },
-    { key: 'null', text: 'NULL', value: 'null' },
-];
-
-const countryCodes = (): any[] => {
-    const countryCodesMap: any = [];
-
-    countries.countries.map(country => {
-        const newCountry = {
-            key: country.iso2,
-            text: country.country,
-            value: country.iso2,
-            flag: country.iso2.toLowerCase(),
-        };
-        countryCodesMap.push(newCountry);
-    })
-
-    return countryCodesMap;
-}
-
 
 
 
@@ -41,33 +18,39 @@ const SearchingFields = () => {
             countryCode: undefined
         });
 
-    const handleSubmit = () => {
-        console.log(filter);
-    }
-
     const updateFilter = (fieldName: string, value: any): void => {
         let newFilter = { ...filter };
         newFilter[fieldName] = value ? value : undefined;
         setFilter(newFilter);
-        console.log(newFilter);
+        userSearchStore.setState({ filter: newFilter });
     }
 
     const handleChange = (e: React.SyntheticEvent<HTMLElement, Event>, data: InputOnChangeData) => {
         updateFilter(data.name, data.value);
     }
 
-    const onCountryCodeFilterSelected = (e: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps): void => {
-        updateFilter('countryCode', data.value);
+    const handleFilterDropdown = (fieldName: string, data: DropdownProps): void => {
+        updateFilter(fieldName, data.value);
     }
 
-    const onMFAFilterSelected = (e: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps): void => {
-        updateFilter('mfa', data.value);
+    const handleSortingDropdown = (fieldName: string, data: DropdownProps): void => {
+
+        let currentSortingMap: SortingMap = userSearchStore.getState().sorting;
+        if (!currentSortingMap) {
+            currentSortingMap = new Map();
+        }
+        if (!data.value) {
+            currentSortingMap.delete(fieldName);
+        } else {
+            currentSortingMap.set(fieldName, data.value as OrderType);
+        }
+        userSearchStore.setState({ sorting: currentSortingMap });
     }
 
     return (
         <CustomSection title='Searching Fields' color='blue'>
-            <Subsection title='Filtering'>
-                <Form>
+            <Form>
+                <CustomHeader title='Filtering' color='blue'>
                     <Form.Group widths='equal'>
                         <Form.Input
                             label='First Name'
@@ -89,24 +72,49 @@ const SearchingFields = () => {
                             label='Country Code'
                             options={countryCodes()}
                             placeholder='Country Code'
-                            onChange={onCountryCodeFilterSelected}
+                            onChange={(e, data) => handleFilterDropdown('countryCode', data)}
                         />
                         <Form.Dropdown
                             search
                             clearable
                             selection
                             label='MFA Type'
-                            options={MFATypes}
+                            options={MFA_TYPES}
                             placeholder='MFA Type'
-                            onChange={onMFAFilterSelected}
+                            onChange={(e, data) => handleFilterDropdown('mfa', data)}
                         />
                     </Form.Group>
-                </Form>
 
 
-            </Subsection >
+                </CustomHeader >
 
-            <Subsection title='Sorting'></Subsection>
+                <CustomHeader title='Sorting' color='blue'>
+
+                    <Form.Group widths='four'>
+
+                        <Form.Dropdown
+                            search
+                            clearable
+                            selection
+                            label='by Creation Date'
+                            options={SORTING_TYPES}
+                            placeholder='Order Type'
+                            onChange={(e, data) => handleSortingDropdown('createdDate', data)} />
+
+                        <Form.Dropdown
+                            search
+                            clearable
+                            selection
+                            label='by Tokens held'
+                            options={SORTING_TYPES}
+                            placeholder='Order By'
+                            onChange={(e, data) => handleSortingDropdown('mfa', data)} />
+
+                    </Form.Group>
+
+                </CustomHeader>
+
+            </Form>
         </CustomSection >
     )
 }

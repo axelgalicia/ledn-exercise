@@ -1,13 +1,13 @@
 import { Header, Divider } from "semantic-ui-react";
 import { SemanticCOLORS } from "semantic-ui-react/dist/commonjs/generic";
 
-type Subsection = {
+type CustomHeaderProps = {
     title: string;
     color?: SemanticCOLORS;
     children?: any;
 }
 
-const Subsection = ({ title, color, children }: Subsection) => {
+const CustomHeader = ({ title, color, children }: CustomHeaderProps) => {
     return (
         <>
             <Header as='h4' color={color ? color : 'black'}>{title}</Header>
@@ -17,4 +17,4 @@ const Subsection = ({ title, color, children }: Subsection) => {
     )
 }
 
-export default Subsection;
+export default CustomHeader;

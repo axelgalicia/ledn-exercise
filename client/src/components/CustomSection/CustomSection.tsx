@@ -5,11 +5,12 @@ type CustomSectionProps = {
     color?: SemanticCOLORS;
     title: string;
     children?: React.ReactNode[] | React.ReactNode;
+    stackable?: boolean;
 }
 
-const CustomSection = ({ title, color, children }: CustomSectionProps) => {
+const CustomSection = ({ title, color, stackable, children }: CustomSectionProps) => {
     return (
-        <Segment color={color}>
+        <Segment color={color} stacked={stackable}>
             <Header as='h3' color={color ? color : 'black'}>{title}</Header>
             <Divider section />
             {children}

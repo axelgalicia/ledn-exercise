@@ -49,6 +49,8 @@ $ http://localhost:4000
 
 ![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/ledn_diagram.png)
 
+There is a service for Mongo Express  started on port 8081, so that the user can connect to the database directly to verify data or queries.
+
 
 ## Screenshots
 

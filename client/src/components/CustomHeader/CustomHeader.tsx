@@ -9,7 +9,7 @@ interface CustomHeaderProps {
 
 const CustomHeader: FC<CustomHeaderProps> = (props) => {
     const { color, title, children } = props;
-    
+
     return (
         <>
             <Header as='h4' color={color ? color : 'black'}>{title}</Header>

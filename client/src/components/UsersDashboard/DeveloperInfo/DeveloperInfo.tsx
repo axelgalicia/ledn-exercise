@@ -26,7 +26,7 @@ const DeveloperInfo: FC<DeveloperInfoProps> = (props) => {
             <List.Item>
                 <List.Icon name='mail' />
                 <List.Content>
-                    <a href='mailto:axelgalicia@gmail.com'>{email}</a>
+                    <a href={`mailto:${email}`}>{email}</a>
                 </List.Content>
             </List.Item>
             <List.Item>

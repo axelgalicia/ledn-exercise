@@ -110,6 +110,14 @@ Based on the data supplied, the following assumptions were made.
 - The null string values were different from a null value, so they were not replaced by any other string when displaying.
 - CSV File should be based on current search.
 
+## Features
+
+- Fully configurable
+- Containerized
+- Both backend and frontend using Typescript for better typing and maintenance
+- Includes Pagination
+- REST API provides endpoints to load data and to filter and sort almost all fields.
+
 ## Considerations
 
 Based on this challenge, the current created stack should be able to handle large amounts of data without any lagging issue. 
@@ -127,6 +135,7 @@ If this project were published into a production environment, the next improveme
 - Introduce unit tests for the backend and frontend to validate the components and the REST API.
 - Abstract even more the components on the UI
 - Improve code after cleaning and refactoring
+- Introduce debouncing for the search requests
 - Consider using a Mongo DB Sharding service instead of just one node.
 - Consider orchestrating the services using Docker Swarm or Kubernetes.
 - Not running containers as a root user

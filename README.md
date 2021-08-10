@@ -69,7 +69,7 @@ Users can be searched using this section which containes the asked filters and s
 
 The backend API already allows to filter by almost all fields as well as sorting. For the challenge just required fields were added to the UI.
 
-![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/load.png)
+![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/filter.png)
 
 
 ### Results
@@ -81,7 +81,7 @@ This paginated table will display all the matched results instantly after updati
 - Dates were formatted for easy visualization
 
 
-![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/load.png)
+![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/results.png)
 
 
 ## Technology and Tools
@@ -98,3 +98,45 @@ This paginated table will display all the matched results instantly after updati
 
 - React (Typescript)
 - Semantic UI
+
+
+## Assumptions
+
+Based on the data provided  the following assumptions were made.
+
+- Email could be used as a unique key
+- Since there was no requirement to use same JSON key names as provided, keys names were improved to a more standard and easy manage notation camel case without spaces.
+- Data will be loaded automatically when starting the app.
+- The null string values were different from a null value so they were not replaced by any other string when displaying.
+- CSV File shoud be based on current search.
+
+## Considerations
+
+Based on this challenge, the current created stack should be able to handle large amounts of data without any lagging issue. 
+
+If more data or processing needs to be added, is already containarized and can be started with more replicas for each service.
+
+
+## Improvements
+
+The project is a MVP which can be used with confidence to provide what the requirement is asking.
+
+If this project would be publish into a production environment the next improvements should be made to make it more reliable:
+
+
+- Introduce unit tests for the backend and frontend to validate the components and the REST API.
+- Abstract even more the components on the UI
+- Improve code after cleaning and refactoring
+- Consider using a Mongo DB Sharding service instead of just one node.
+- Consider orchastrating the services using Docker Swarm or Kubernetes.
+- Not running containers as a root user
+- Providing better configuration for NGINX to allow GZIP and limit request size.
+- Integrate HTTPS into the solution
+- Improve Dockerfiles
+
+
+## Author
+
+- Created by Axel Galicia
+- Senior Software Engineer
+- axelgalicia@gmail.com

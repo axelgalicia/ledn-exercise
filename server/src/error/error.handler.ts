@@ -91,7 +91,6 @@ class ErrorHandler {
      */
     private async handleOtherError(error: any, res: Response, next: NextFunction): Promise<void> {
         const trackingCode = uuidv4();
-        console.log('ERROR INSIDE HANDLER', error);
         const responseError = this.getGenericErrorResponse(error, trackingCode);
         Logger.child({ trackingCode: trackingCode }).error(responseError);
         res.status(500).json(responseError);

@@ -3,8 +3,8 @@ export type Statistics = {
 }
 
 export type Pagination = {
-    pageNumber: number;
-    pageSize: number;
+    pageNumber?: number;
+    pageSize?: number;
 }
 
 export type UserSearchStorage = {

@@ -1,4 +1,5 @@
 import { UserRecord } from "./types"
+import { countries } from '../constants'
 
 export const mapUsers = (records: any): UserRecord[] => {
     if (!records) return [];
@@ -17,4 +18,10 @@ export const mapUsers = (records: any): UserRecord[] => {
 
         } as UserRecord
     })
+}
+
+
+export const lookupCountryName = (code: string): string => {
+    const country = countries.find(country => (country.countryCode === code.toLowerCase()));
+    return country ? country.name : '';
 }

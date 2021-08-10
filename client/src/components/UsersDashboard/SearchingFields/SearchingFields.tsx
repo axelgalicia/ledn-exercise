@@ -17,12 +17,13 @@ const SearchingFields = () => {
             mfa: undefined,
             countryCode: undefined
         });
+    const [sorting, setSorting] = useState<SortingMap>(new Map());
 
     const updateFilter = (fieldName: string, value: any): void => {
         let newFilter = { ...filter };
         newFilter[fieldName] = value ? value : undefined;
         setFilter(newFilter);
-        userSearchStore.setState({ filter: newFilter });
+        userSearchStore.setState({ filter: newFilter, pagination: { pageNumber: 1 } });
     }
 
     const handleChange = (e: React.SyntheticEvent<HTMLElement, Event>, data: InputOnChangeData) => {
@@ -44,7 +45,8 @@ const SearchingFields = () => {
         } else {
             currentSortingMap.set(fieldName, data.value as OrderType);
         }
-        userSearchStore.setState({ sorting: currentSortingMap });
+        userSearchStore.setState({ sorting: currentSortingMap, pagination: { pageNumber: 1 } });
+        setSorting(currentSortingMap);
     }
 
     return (
@@ -108,7 +110,7 @@ const SearchingFields = () => {
                             label='by Tokens held'
                             options={SORTING_TYPES}
                             placeholder='Order By'
-                            onChange={(e, data) => handleSortingDropdown('mfa', data)} />
+                            onChange={(e, data) => handleSortingDropdown('amt', data)} />
 
                     </Form.Group>
 

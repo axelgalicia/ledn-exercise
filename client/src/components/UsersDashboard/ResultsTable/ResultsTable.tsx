@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import Moment from 'react-moment';
 import { CSVLink } from "react-csv";
 import _ from 'lodash'
-import { Table, Container, Pagination, PaginationProps, Button } from "semantic-ui-react"
+import { Table, Container, Pagination, PaginationProps, Button, Flag } from "semantic-ui-react"
 import CustomSection from "../../CustomSection"
 import userSearchStore from "../stores/useUserSearchStore";
 import {
@@ -22,7 +22,7 @@ import {
 import { SortingType, UsersResults } from "./types"
 import { useQuery, UseQueryResult } from "react-query"
 import { fetchAllUsers } from "./services"
-import { mapUsers } from "./utils";
+import { lookupCountryName, mapUsers } from "./utils";
 import { OrderType, SearchFilter } from "../types";
 
 
@@ -56,16 +56,17 @@ const ResultsTable = () => {
 
 
     userSearchStore.subscribe((n) => {
-        setQueryEnabled(true);
+        setActivePage(n.pagination.pageNumber as number);
         setFilter(n.filter as SearchFilter);
         setSorting(n.sorting ? n.sorting : new Map());
+        setQueryEnabled(true);
     });
 
     const handlePageChange = (e: any, data: PaginationProps): void => {
         const activePage = data.activePage as number;
         setQueryEnabled(true);
         setActivePage(activePage);
-        userSearchStore.setState({ filter: { pageNumber: activePage } });
+        userSearchStore.setState({ pagination: { pageNumber: activePage } });
     }
 
     const handleSortByColum = (columnName: string): void => {
@@ -165,11 +166,13 @@ const ResultsTable = () => {
                             <Table.Row key={email}>
                                 <Table.Cell>{firstName}</Table.Cell>
                                 <Table.Cell>{lastName}</Table.Cell>
-                                <Table.Cell>{countryCode}</Table.Cell>
+                                <Table.Cell>
+                                    {<Flag name={countryCode.toLowerCase()}></Flag>} {lookupCountryName(countryCode)}
+                                </Table.Cell>
                                 <Table.Cell>{email}</Table.Cell>
                                 <Table.Cell><Moment format="MMM DD, YYYY">{dob}</Moment></Table.Cell>
                                 <Table.Cell>{mfa}</Table.Cell>
-                                <Table.Cell>{amt}</Table.Cell>
+                                <Table.Cell>{amt.toLocaleString()}</Table.Cell>
                                 <Table.Cell>
                                     <Moment format="MMM DD, YYYY HH:mm:ss">{createdDate}</Moment></Table.Cell>
                                 <Table.Cell>{referredBy}</Table.Cell>

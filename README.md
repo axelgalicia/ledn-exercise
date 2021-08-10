@@ -1,4 +1,4 @@
-# Ledn - Technical Assessment (Users Search) #
+# Ledn - Technical Assessment (Users Search)
 
 - Candidate Name: Axel Galicia
 - email: axelgalicia@gmail.com
@@ -14,7 +14,7 @@ This solution solves the challenge of listing users using containerized services
 - Backend service - Express JS
 - Frontend service - React
 
-## System Requirements ###
+## System Requirements
 ---
 
 This application was tested:
@@ -25,7 +25,7 @@ This application was tested:
 - **Google Chrome: Version:  92.0.4515.131**
 ---
 
-## Instalation & Running ##
+## Instalation & Running
 
 1. Clone repository
 
@@ -45,7 +45,56 @@ $  docker-compose up
 $ http://localhost:4000
 ```
 
-## Architechture ##
+## Architechture
 
-![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/ledn_diagram.png)
+![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/ledn_diagram.png)
 
+
+## Screenshots
+
+### Loading Data
+
+Here you can load your data by just droping the **accounts.json** file inside the data folder and just pressing the green button to load it automatically. 
+
+The original accounts.json file is already there.
+
+Unique key is email. Duplicates will not be inserted again or replaced.
+
+![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/load.png)
+
+
+### Searching
+
+Users can be searched using this section which containes the asked filters and sorting fields. 
+
+The backend API already allows to filter by almost all fields as well as sorting. For the challenge just required fields were added to the UI.
+
+![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/load.png)
+
+
+### Results
+
+This paginated table will display all the matched results instantly after updating any filter or sirting field.
+
+- Results are displayed as inserted by default.
+- User can Download a CSV file of the current search
+- Dates were formatted for easy visualization
+
+
+![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/load.png)
+
+
+## Technology and Tools
+
+### Banckend
+
+- Express JS
+- Typescript
+- MongoDB
+- Mongoose
+- Docker
+
+### Frontend
+
+- React (Typescript)
+- Semantic UI

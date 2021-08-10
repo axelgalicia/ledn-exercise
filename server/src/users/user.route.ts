@@ -24,7 +24,7 @@ const router = express.Router();
  * @returns {IUserStatistics} Returns User collection statistics
  * 
  */
- router.get('/api/users/statistics', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/api/users/statistics', async (req: Request, res: Response, next: NextFunction) => {
 
     let statistics = null;
     try {
@@ -142,7 +142,7 @@ router.delete('/api/users', [], async (req: Request, res: Response, next: NextFu
  * @returns {UserDoc[]} Returns the list of all UserDoc[]
  * 
  */
- router.get('/api/users/autoload', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/api/users/autoload', async (req: Request, res: Response, next: NextFunction) => {
 
     let inserted = null;
     try {

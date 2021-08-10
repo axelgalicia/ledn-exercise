@@ -1,17 +1,20 @@
+import { FC } from "react";
 import { Message } from "semantic-ui-react";
 
-type ErrorMessageProps = {
+interface ErrorMessageProps {
     visible: boolean;
     message: string;
     title?: string;
 }
 
 
-const ErrorMessage = ({ message, visible, title }: ErrorMessageProps) => {
+const ErrorMessage: FC<ErrorMessageProps> = (props) => {
+    const { visible, message, title } = props;
+
     if (!visible) {
         return (<></>)
     }
-    
+
     return (
         <Message negative>
             <Message.Header>{!!title ? title : 'There was an error'}</Message.Header>

@@ -1,13 +1,17 @@
+import { FC } from "react";
 import { Message } from "semantic-ui-react";
 
-type SuccessMessageProps = {
+interface SuccessMessageProps {
     visible: boolean;
     message: string;
     title?: string;
 }
 
 
-const SuccessMessage = ({ message, visible, title }: SuccessMessageProps) => {
+const SuccessMessage: FC<SuccessMessageProps> = (props) => {
+
+    const { visible, message, title } = props;
+
     if (!visible) {
         return (<></>)
     }

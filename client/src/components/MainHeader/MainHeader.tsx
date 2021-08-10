@@ -1,14 +1,18 @@
+import { FC } from "react";
 import { Container, Icon, Header } from "semantic-ui-react"
 import { SemanticCOLORS, SemanticICONS } from "semantic-ui-react/dist/commonjs/generic"
 
-type MainHeaderProps = {
+interface MainHeaderProps {
     title: string;
     subheader: string;
     color: SemanticCOLORS;
     icon: SemanticICONS;
 }
 
-const MainHeader = ({ title, subheader, color, icon }: MainHeaderProps) => {
+const MainHeader: FC<MainHeaderProps> = (props) => {
+    
+    const { color, icon, title, subheader } = props;
+
     return (
         <>
             <Container textAlign='center'>

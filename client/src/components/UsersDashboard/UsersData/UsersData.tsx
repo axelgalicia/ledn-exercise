@@ -15,10 +15,9 @@ const SpacedButton = styled(Button)`
 }
 `
 
-
-
 const UsersData = () => {
 
+    const [queryEnabled, setEnabledQuery] = useState<boolean>(true);
     const [showError, setShowError] = useState<boolean>(false);
     const [showSucess, setShowSuccess] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>('');
@@ -31,16 +30,24 @@ const UsersData = () => {
         }, 5000);
     }, [showError, showSucess]);
 
-    const queryStatistics: UseQueryResult<IUserStatistics, Error> = useQuery('userStatistics', fetchUserStatistics);
+    const queryStatistics: UseQueryResult<IUserStatistics, Error> = useQuery('userStatistics', fetchUserStatistics, {
+        enabled: queryEnabled,
+        onSuccess: () => {
+            setEnabledQuery(false);
+        }
+    });
+
     const mutationDeleteAllUsers: UseMutationResult<void, Error> = useMutation('deleteAllUsers', fetchDeleteAllUsers, {
         onSuccess: () => {
             queryStatistics.refetch();
             setShowError(false);
             setShowSuccess(true);
+            setEnabledQuery(true);
             setSuccessMessage('Users deleted successfully');
         },
         onError: (error: Error) => {
             setShowError(true);
+            setEnabledQuery(true);
             setErrorMessage('Could not delete all users');
         }
     });
@@ -53,6 +60,7 @@ const UsersData = () => {
         },
         onError: (error: Error) => {
             setShowError(true);
+            setEnabledQuery(true);
             setErrorMessage('Could not load the file');
         }
     });

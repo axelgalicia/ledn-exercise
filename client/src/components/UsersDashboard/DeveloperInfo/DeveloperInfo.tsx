@@ -1,7 +1,7 @@
+import { FC } from "react";
 import { List } from "semantic-ui-react"
 
-
-type DeveloperInfoProps = {
+interface DeveloperInfoProps {
     name: string;
     city: string;
     email: string;
@@ -9,7 +9,9 @@ type DeveloperInfoProps = {
     linkLabel: string;
 }
 
-const DeveloperInfo = ({ name, city, email, websiteLink, linkLabel }: DeveloperInfoProps) => {
+const DeveloperInfo: FC<DeveloperInfoProps> = (props) => {
+
+    const { name, city, email, websiteLink, linkLabel } = props;
 
     return (
         <List>

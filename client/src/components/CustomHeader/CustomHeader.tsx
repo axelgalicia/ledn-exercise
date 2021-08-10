@@ -1,13 +1,15 @@
+import { FC } from "react";
 import { Header, Divider } from "semantic-ui-react";
 import { SemanticCOLORS } from "semantic-ui-react/dist/commonjs/generic";
 
-type CustomHeaderProps = {
+interface CustomHeaderProps {
     title: string;
     color?: SemanticCOLORS;
-    children?: any;
 }
 
-const CustomHeader = ({ title, color, children }: CustomHeaderProps) => {
+const CustomHeader: FC<CustomHeaderProps> = (props) => {
+    const { color, title, children } = props;
+    
     return (
         <>
             <Header as='h4' color={color ? color : 'black'}>{title}</Header>

@@ -23,7 +23,7 @@ import { SortingType, UsersResults } from "./types"
 import { useQuery, UseQueryResult } from "react-query"
 import { fetchAllUsers } from "./services"
 import { mapUsers } from "./utils";
-import { OrderType, SearchFilter, SortingMap } from "../types";
+import { OrderType, SearchFilter } from "../types";
 
 
 const ResultsTable = () => {
@@ -33,7 +33,6 @@ const ResultsTable = () => {
     const [activePage, setActivePage] = useState(1);
     const [pageSize, setPageSize] = useState(20);
     const [queryEnabled, setQueryEnabled] = useState(true);
-
 
     const queryFetchAllUsers: UseQueryResult<UsersResults, Error> =
         useQuery(['fetchAllUsers', filter, sorting, activePage, pageSize],
@@ -48,7 +47,7 @@ const ResultsTable = () => {
                 throw Error('Could not fetch users')
             }
         });
-        
+
     const [{ column, data, direction }, dispatch] = React.useReducer(sortingReducer, {
         column: null,
         data: [],
@@ -56,8 +55,7 @@ const ResultsTable = () => {
     })
 
 
-    userSearchStore.subscribe((n, p) => {
-        console.log('n', n, 'p', p);
+    userSearchStore.subscribe((n) => {
         setQueryEnabled(true);
         setFilter(n.filter as SearchFilter);
         setSorting(n.sorting ? n.sorting : new Map());

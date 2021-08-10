@@ -53,7 +53,6 @@ const sortBy = (sortByFields: ISortByFields | undefined, query: any): void => {
     if (!!sortByFields) {
         validateSorting(sortByFields);
         const sortByArray: SortByArray = convertToSortByArray(sortByFields);
-        console.log('Sorting array:', sortByArray);
         querySort(sortByArray, query);
     }
 }

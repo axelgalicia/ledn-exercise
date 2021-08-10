@@ -9,7 +9,6 @@ export const fetchAllUsers = async (
     activePage?: number,
     pageSize?: number): Promise<UsersResults> => {
 
-    console.log('FETCH', filter, sorting, activePage, pageSize);
     const filters = encodeFilterParams(filter);
     const sortings = encodeSortingParams(sorting);
     const queryParams = `${filters}&pageSize=${pageSize}&pageNumber=${activePage}${sortings}`;

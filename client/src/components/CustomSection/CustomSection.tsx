@@ -1,7 +1,8 @@
+import { FC } from "react";
 import { Segment, Header, Divider, Label } from "semantic-ui-react"
 import { SemanticCOLORS } from "semantic-ui-react/dist/commonjs/generic"
 
-type CustomSectionProps = {
+interface CustomSectionProps {
     color?: SemanticCOLORS;
     title: string;
     children?: React.ReactNode[] | React.ReactNode;
@@ -10,7 +11,10 @@ type CustomSectionProps = {
     labelValue?: string;
 }
 
-const CustomSection = ({ title, color, stackable, showLabel, labelValue, children }: CustomSectionProps) => {
+const CustomSection: FC<CustomSectionProps> = (props) => {
+    
+    const { color, stackable, title, showLabel, labelValue, children } = props;
+
     return (
         <Segment color={color} stacked={stackable}>
             <Header as='h3' color={color ? color : 'black'}>{title}

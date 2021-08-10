@@ -53,6 +53,7 @@ const sortBy = (sortByFields: ISortByFields | undefined, query: any): void => {
     if (!!sortByFields) {
         validateSorting(sortByFields);
         const sortByArray: SortByArray = convertToSortByArray(sortByFields);
+        console.log('Sorting array:', sortByArray);
         querySort(sortByArray, query);
     }
 }
@@ -76,9 +77,10 @@ const validateSorting = (sortByFields: ISortByFields): void => {
 const convertToSortByArray = (sortByFields: any): SortByArray => {
     let sortByArray: SortByArray = [];
     for (let key in sortByFields) {
-        const lowerKey = key.toLowerCase();
-        if (VALID_SORTING_FIELDS.includes(lowerKey)) {
-            addSortingField(lowerKey, sortByFields, sortByArray);
+        if (VALID_SORTING_FIELDS.includes(key)) {
+            addSortingField(key, sortByFields, sortByArray);
+        } else {
+            throw new Error(`Sorting field ${key} does not exist`);
         }
     }
 

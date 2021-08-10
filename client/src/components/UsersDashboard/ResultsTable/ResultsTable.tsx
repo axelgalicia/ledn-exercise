@@ -48,6 +48,7 @@ const ResultsTable = () => {
                 throw Error('Could not fetch users')
             }
         });
+        
     const [{ column, data, direction }, dispatch] = React.useReducer(sortingReducer, {
         column: null,
         data: [],

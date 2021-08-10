@@ -17,7 +17,7 @@ This solution solves the challenge of listing users using containerized services
 ## System Requirements
 ---
 
-This application was tested:
+This application was tested using: (Update to latest Docker Desktop Version)
 ---
 
 - **Docker Version: 20.10.7**
@@ -50,6 +50,20 @@ $ http://localhost:4000
 ![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/ledn_diagram.png)
 
 There is a service for Mongo Express  started on port 8081, so that the user can connect to the database directly to verify data or queries.
+
+## Folder Structure
+
+```
+client -> contains the React App
+ - .env -> To configure App
+
+server -> contains the Express JS API
+- process.json -> Configure local and production environments
+
+data -> folder to drop accounts.json to be loaded
+
+.env -> Configure environment variables
+```
 
 
 ## Screenshots

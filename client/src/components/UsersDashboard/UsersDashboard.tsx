@@ -15,7 +15,7 @@ const UsersDashboard = () => {
         <>
             <Grid centered padded='vertically' />
             <Grid centered padded='horizontally'>
-                <Grid.Column width={10}>
+                <Grid.Column width={14}>
                     <Container fluid>
                         <MainHeader
                             title="Ledn Users Search"

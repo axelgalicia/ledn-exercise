@@ -1,6 +1,8 @@
 import { UserRecord } from "./types"
 
 export const mapUsers = (records: any): UserRecord[] => {
+    if (!records) return [];
+
     return records.map((record: any) => {
         return {
             firstName: record.firstName,

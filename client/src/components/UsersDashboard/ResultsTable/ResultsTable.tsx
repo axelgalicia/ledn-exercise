@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import Moment from 'react-moment';
 import { CSVLink } from "react-csv";
 import _ from 'lodash'
-import { Segment, Table, Dimmer, Loader, Container, Pagination, Image, PaginationProps, Button } from "semantic-ui-react"
+import { Table, Container, Pagination, PaginationProps, Button } from "semantic-ui-react"
 import CustomSection from "../../CustomSection"
 import userSearchStore from "../stores/useUserSearchStore";
 import {
@@ -23,32 +23,50 @@ import { SortingType, UsersResults } from "./types"
 import { useQuery, UseQueryResult } from "react-query"
 import { fetchAllUsers } from "./services"
 import { mapUsers } from "./utils";
+import { OrderType, SearchFilter, SortingMap } from "../types";
 
 
 const ResultsTable = () => {
 
+    const [sorting, setSorting] = useState(new Map<string, OrderType>());
+    const [filter, setFilter] = useState({});
+    const [activePage, setActivePage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
     const [queryEnabled, setQueryEnabled] = useState(true);
-    const queryFetchAllUsers: UseQueryResult<UsersResults, Error> = useQuery('fetchAllUsers', async () => fetchAllUsers(), {
-        enabled: queryEnabled, onSuccess: (data) => {
-            dispatch({ type: UPDATE_DATA_ACTION, data: mapUsers(data.records) });
-        }
-    });
 
-    const [state, dispatch] = React.useReducer(sortingReducer, {
+
+    const queryFetchAllUsers: UseQueryResult<UsersResults, Error> =
+        useQuery(['fetchAllUsers', filter, sorting, activePage, pageSize],
+            () => fetchAllUsers(filter, sorting, activePage, pageSize), {
+            enabled: queryEnabled,
+            onSuccess: (data) => {
+                dispatch({ type: UPDATE_DATA_ACTION, data: mapUsers(data.records) });
+                setQueryEnabled(false);
+            },
+            onError: () => {
+                setQueryEnabled(true);
+                throw Error('Could not fetch users')
+            }
+        });
+    const [{ column, data, direction }, dispatch] = React.useReducer(sortingReducer, {
         column: null,
         data: [],
         direction: null,
     })
-    const { column, data, direction } = state;
 
 
-    userSearchStore.subscribe((n, o) => {
-        queryFetchAllUsers.refetch();
+    userSearchStore.subscribe((n, p) => {
+        console.log('n', n, 'p', p);
+        setQueryEnabled(true);
+        setFilter(n.filter as SearchFilter);
+        setSorting(n.sorting ? n.sorting : new Map());
     });
 
     const handlePageChange = (e: any, data: PaginationProps): void => {
-        console.log('Page selection:', data.activePage);
-        queryFetchAllUsers.refetch();
+        const activePage = data.activePage as number;
+        setQueryEnabled(true);
+        setActivePage(activePage);
+        userSearchStore.setState({ filter: { pageNumber: activePage } });
     }
 
     const handleSortByColum = (columnName: string): void => {
@@ -144,38 +162,28 @@ const ResultsTable = () => {
                 </Table.Header>
                 <Table.Body>
                     {
-
-                        !isLoading(queryFetchAllUsers) && queryFetchAllUsers.isSuccess ?
-                            data.map(({ firstName, lastName, countryCode, email, dob, mfa, amt, createdDate, referredBy }: any) => (
-                                <Table.Row key={email}>
-                                    <Table.Cell>{firstName}</Table.Cell>
-                                    <Table.Cell>{lastName}</Table.Cell>
-                                    <Table.Cell>{countryCode}</Table.Cell>
-                                    <Table.Cell>{email}</Table.Cell>
-                                    <Table.Cell><Moment format="MMM DD, YYYY">{dob}</Moment></Table.Cell>
-                                    <Table.Cell>{mfa}</Table.Cell>
-                                    <Table.Cell>{amt}</Table.Cell>
-                                    <Table.Cell>
-                                        <Moment format="MMM DD, YYYY HH:mm:ss">{createdDate}</Moment></Table.Cell>
-                                    <Table.Cell>{referredBy}</Table.Cell>
-                                </Table.Row>
-                            ))
-                            : <></>
+                        data.map(({ firstName, lastName, countryCode, email, dob, mfa, amt, createdDate, referredBy }: any) => (
+                            <Table.Row key={email}>
+                                <Table.Cell>{firstName}</Table.Cell>
+                                <Table.Cell>{lastName}</Table.Cell>
+                                <Table.Cell>{countryCode}</Table.Cell>
+                                <Table.Cell>{email}</Table.Cell>
+                                <Table.Cell><Moment format="MMM DD, YYYY">{dob}</Moment></Table.Cell>
+                                <Table.Cell>{mfa}</Table.Cell>
+                                <Table.Cell>{amt}</Table.Cell>
+                                <Table.Cell>
+                                    <Moment format="MMM DD, YYYY HH:mm:ss">{createdDate}</Moment></Table.Cell>
+                                <Table.Cell>{referredBy}</Table.Cell>
+                            </Table.Row>
+                        ))
                     }
                 </Table.Body>
             </Table>
-
-            {isLoading(queryFetchAllUsers) ?
-
-                <Segment>
-                    <Dimmer active inverted>
-                        <Loader size='large'>Loading</Loader>
-                    </Dimmer>
-                    <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
-                </Segment> : <></>}
             <Container textAlign='center'>
                 {getUserResults(queryFetchAllUsers).pageCount ?
-                    <Pagination defaultActivePage={1} totalPages={getUserResults(queryFetchAllUsers).pageCount} onPageChange={(e, data) => handlePageChange(e, data)} />
+                    <Pagination
+                        totalPages={getUserResults(queryFetchAllUsers).pageCount}
+                        onPageChange={(e, data) => handlePageChange(e, data)} activePage={activePage} />
                     : <></>
                 }
             </Container>
@@ -190,7 +198,13 @@ const isLoading = (queryFetchAllUsers: UseQueryResult<UsersResults, Error>): boo
 
 const getUserResults = (q: UseQueryResult<UsersResults, Error>): UsersResults => {
 
-    if (isLoading(q) || !q.isSuccess) return {} as UsersResults;
+    if (isLoading(q) || !q.isSuccess) return {
+        totalRecords: 0,
+        currentPage: 0,
+        pageCount: 0,
+        pageSize: 20,
+        records: []
+    } as UsersResults;
     const { totalRecords, currentPage, pageCount, pageSize, records } = q.data as UsersResults;
 
     return {

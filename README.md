@@ -47,4 +47,5 @@ $ http://localhost:4000
 
 ## Architechture ##
 
+![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/ledn_diagram.png)
 

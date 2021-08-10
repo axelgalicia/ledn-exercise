@@ -30,7 +30,7 @@ This application was tested:
 1. Clone repository
 
 ```
-$  git clone https://github.com/axelgalicia/ledn-exercise.git
+$  git clone git@github.com:axelgalicia/ledn-exercise.git
 ```
 
 2. Change to ledn-exercise folder and run docker-compose

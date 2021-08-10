@@ -25,7 +25,7 @@ This application was tested:
 - **Google Chrome: Version:  92.0.4515.131**
 ---
 
-## Instalation & Running
+## Installation & Running
 
 1. Clone repository
 
@@ -39,13 +39,13 @@ $  git clone https://github.com/axelgalicia/ledn-exercise.git
 $  docker-compose up
 ```
 
-3. After image building and services started please open your browser:
+3. After image building and services started, please open your browser:
 
 ```
 $ http://localhost:4000
 ```
 
-## Architechture
+## Architecture
 
 ![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/ledn_diagram.png)
 
@@ -54,7 +54,7 @@ $ http://localhost:4000
 
 ### Loading Data
 
-Here you can load your data by just droping the **accounts.json** file inside the data folder and just pressing the green button to load it automatically. 
+Here you can load your data by just dropping the **accounts.json** file inside the data folder and just pressing the green button to load it automatically. 
 
 The original accounts.json file is already there.
 
@@ -65,16 +65,16 @@ Unique key is email. Duplicates will not be inserted again or replaced.
 
 ### Searching
 
-Users can be searched using this section which containes the asked filters and sorting fields. 
+Users can be searched using this section which contains the asked filters and sorting fields. 
 
-The backend API already allows to filter by almost all fields as well as sorting. For the challenge just required fields were added to the UI.
+The backend API already allows filtering by almost all fields, as well as sorting. For the challenge, just required fields were added to the UI.
 
 ![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/filter.png)
 
 
 ### Results
 
-This paginated table will display all the matched results instantly after updating any filter or sirting field.
+This paginated table will display all the matched results instantly after updating any filter or sorting field.
 
 - Results are displayed as inserted by default.
 - User can Download a CSV file of the current search
@@ -86,7 +86,7 @@ This paginated table will display all the matched results instantly after updati
 
 ## Technology and Tools
 
-### Banckend
+### Backend
 
 - Express JS
 - Typescript
@@ -102,33 +102,33 @@ This paginated table will display all the matched results instantly after updati
 
 ## Assumptions
 
-Based on the data provided  the following assumptions were made.
+Based on the data supplied, the following assumptions were made.
 
 - Email could be used as a unique key
-- Since there was no requirement to use same JSON key names as provided, keys names were improved to a more standard and easy manage notation camel case without spaces.
+- Since there was no requirement to use same JSON key names as provided, keys names were improved to a more standard and easy to manage notation camel case without spaces.
 - Data will be loaded automatically when starting the app.
-- The null string values were different from a null value so they were not replaced by any other string when displaying.
-- CSV File shoud be based on current search.
+- The null string values were different from a null value, so they were not replaced by any other string when displaying.
+- CSV File should be based on current search.
 
 ## Considerations
 
 Based on this challenge, the current created stack should be able to handle large amounts of data without any lagging issue. 
 
-If more data or processing needs to be added, is already containarized and can be started with more replicas for each service.
+If more data or processing needs to be added, it is already containerized and can be started with more replicas for each service.
 
 
 ## Improvements
 
-The project is a MVP which can be used with confidence to provide what the requirement is asking.
+The project is an MVP which can be used with confidence to provide what the requirement is asking.
 
-If this project would be publish into a production environment the next improvements should be made to make it more reliable:
+If this project were published into a production environment, the next improvements should be made to make it more reliable:
 
 
 - Introduce unit tests for the backend and frontend to validate the components and the REST API.
 - Abstract even more the components on the UI
 - Improve code after cleaning and refactoring
 - Consider using a Mongo DB Sharding service instead of just one node.
-- Consider orchastrating the services using Docker Swarm or Kubernetes.
+- Consider orchestrating the services using Docker Swarm or Kubernetes.
 - Not running containers as a root user
 - Providing better configuration for NGINX to allow GZIP and limit request size.
 - Integrate HTTPS into the solution
@@ -140,3 +140,4 @@ If this project would be publish into a production environment the next improvem
 - Created by Axel Galicia
 - Senior Software Engineer
 - axelgalicia@gmail.com
+- https://axel.today

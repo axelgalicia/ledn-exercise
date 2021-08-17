@@ -1,9 +1,5 @@
-# Ledn - Technical Assessment (Users Search)
+Users Search MERN Architecture
 
-- Candidate Name: Axel Galicia
-- email: axelgalicia@gmail.com
-
----
 
 ## Description
 ---

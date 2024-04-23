@@ -4,8 +4,8 @@
  * @author [Axel Galicia](https://github.com/axelgalicia)
  */
 
-const APP_PORT = process.env.LEDN_PORT;
-const DEFAULT_PAGE_SIZE = process.env.LEDN_DEFAULT_PAGE_SIZE;
+const APP_PORT = process.env.PORT;
+const DEFAULT_PAGE_SIZE = process.env.DEFAULT_PAGE_SIZE;
 
 type EnvVariable = string | undefined;
 

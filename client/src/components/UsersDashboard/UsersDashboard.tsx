@@ -18,7 +18,7 @@ const UsersDashboard = () => {
                 <Grid.Column width={14}>
                     <Container fluid>
                         <MainHeader
-                            title="Ledn Users Search"
+                            title="Users Search"
                             subheader="Token holder's accounts"
                             color='blue'
                             icon='search' />

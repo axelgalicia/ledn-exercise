@@ -5,11 +5,11 @@
  */
 
 
-const MONGO_USER = process.env.LEDN_MONGO_USER;
-const MONGO_PASSWORD = process.env.LEDN_MONGO_PASSWORD;
-const MONGO_HOSTNAME = process.env.LEDN_MONGO_HOSTNAME;
-const MONGO_PORT = process.env.LEDN_MONGO_PORT;
-const MONGO_DB = process.env.LEDN_MONGO_DB;
+const MONGO_USER = process.env.MONGO_USER;
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
+const MONGO_HOSTNAME = process.env.MONGO_HOSTNAME;
+const MONGO_PORT = process.env.MONGO_PORT;
+const MONGO_DB = process.env.MONGO_DB;
 
 
 interface IMongoDBConfig {

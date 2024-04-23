@@ -26,10 +26,10 @@ This application was tested using: (Update to latest Docker Desktop Version)
 1. Clone repository
 
 ```
-$  git clone git@github.com:axelgalicia/ledn-exercise.git
+$  git clone https://github.com/axelgalicia/react-express-mongo-docker
 ```
 
-2. Change to ledn-exercise folder and run docker-compose
+2. Change to main folder and run docker-compose
 
 ```
 $  docker-compose up
@@ -43,7 +43,7 @@ $ http://localhost:4000
 
 ## Architecture
 
-![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/ledn_diagram.png)
+![Diagram](https://github.com/axelgalicia/react-express-mongo-docker/blob/master/images/diagram.png)
 
 There is a service for Mongo Express  started on port 8081, so that the user can connect to the database directly to verify data or queries.
 
@@ -72,7 +72,7 @@ The original accounts.json file is already there.
 
 Unique key is email. Duplicates will not be inserted again or replaced.
 
-![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/load.png)
+![Diagram](https://github.com/axelgalicia/react-express-mongo-docker/blob/master/images/load.png)
 
 
 ### Searching
@@ -81,7 +81,7 @@ Users can be searched using this section which contains the asked filters and so
 
 The backend API already allows filtering by almost all fields, as well as sorting. For the challenge, just required fields were added to the UI.
 
-![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/filter.png)
+![Diagram](https://github.com/axelgalicia/react-express-mongo-docker/blob/master/images/filter.png)
 
 
 ### Results
@@ -93,7 +93,7 @@ This paginated table will display all the matched results instantly after updati
 - Dates were formatted for easy visualization
 
 
-![Diagram](https://github.com/axelgalicia/ledn-exercise/blob/master/images/results.png)
+![Diagram](https://github.com/axelgalicia/react-express-mongo-docker/blob/master/images/results.png)
 
 
 ## Technology and Tools

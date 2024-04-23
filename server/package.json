@@ -1,11 +1,11 @@
 {
-  "name": "ledn-server",
+  "name": "server",
   "version": "0.0.1",
-  "description": "Ledn API Server",
+  "description": "API Server",
   "main": "index.js",
   "scripts": {
     "dev": "npm run build && npm start",
-    "start": "pm2-runtime start process.json --only ledn_server_local --env local",
+    "start": "pm2-runtime start process.json --only server_local --env local",
     "build": "tsc -p ."
   },
   "author": "Axel Galicia - axelgalicia@gmail.com",

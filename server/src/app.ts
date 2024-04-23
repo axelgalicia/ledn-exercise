@@ -1,5 +1,5 @@
 /**
- * LEDN API Server - Starts an Express JS API
+ * API Server - Starts an Express JS API
  * which allows the user to query and insert Users
  * into and from a NoSQL database. (MongoDB)
  * 

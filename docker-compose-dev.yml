@@ -41,9 +41,9 @@ services:
         networks: 
             - mongodb_network
 
-    # Ledn API
-    ledn-api:
-        container_name: ledn-api
+    # API
+    api:
+        container_name: api
         depends_on:
             - mongodb
         restart: always
@@ -54,21 +54,9 @@ services:
             - 3000:3000
         volumes:
             - ./data/:/opt/data
-        command: ["pm2-runtime", "start", "process.json", "--only", "ledn_server_dev", "--env","development"]
+        command: ["pm2-runtime", "start", "process.json", "--only", "server_dev", "--env","development"]
         networks:
             - mongodb_network
-
-    # Ledn Client
-    # ledn-client:
-    #     container_name: ledn-client
-    #     depends_on:
-    #         - ledn-api
-    #     restart: always
-    #     build:
-    #         context: ./client
-    #         dockerfile: .
-    #     ports:
-    #         - 4000:80
         
   
 volumes:

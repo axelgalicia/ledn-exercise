@@ -84,7 +84,7 @@ const ResultsTable = () => {
 
     return (
         <CustomSection title='Results' color='blue' showLabel={true} labelValue={getUserResults(queryFetchAllUsers).totalRecords + ''}>
-            {data.length > 0 ? <CSVLink data={data} filename={`ledn_results.csv`}><Button color='blue' size='small'>DOWNLOAD CSV</Button></CSVLink> : <></>}
+            {data.length > 0 ? <CSVLink data={data} filename={`results.csv`}><Button color='blue' size='small'>DOWNLOAD CSV</Button></CSVLink> : <></>}
 
             <Table sortable celled compact='very' collapsing size='small' stackable>
                 <Table.Header>
